@@ -1,0 +1,31 @@
+{
+  "name": "@getleash/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared types, ABIs, policy parser, Kernel-wrapped EIP-712 builder, and x402 parser for Leash.",
+  "license": "MIT",
+  "author": "Stepan Kouba",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getleash/leash.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://getleash.dev",
+  "bugs": "https://github.com/getleash/leash/issues",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run --exclude test/integration/**",
+    "test:sepolia": "vitest run test/integration/",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "viem": "^2.27.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "vitest": "^3.1.0"
+  }
+}

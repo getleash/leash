@@ -1,0 +1,20 @@
+{
+  "namespace": "mycelia",
+  "provider": "Mycelia Signal",
+  "url": "https://myceliasignal.com/api/price/btc-usd",
+  "shape": "rest",
+  "ok": false,
+  "status": 404,
+  "rawHeaders": {
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "cf-ray": "9fa82f23fb8ec1bb-PRG",
+    "connection": "keep-alive",
+    "content-length": "0",
+    "date": "Tue, 12 May 2026 08:51:53 GMT",
+    "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+    "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=nI5xYvQ1KWs0hyFmNHo87D21VVsNvW2L4iBqLgnMRmssy0LZK%2BtSbAEs2NDYQDnDyEyv2EMFm5yENu4%2Ffrb6bBK62BvWv9VcfvfatE1hkFsb64Ptothne0dBhr2c%2BMAYJPyyjA%3D%3D\"}]}",
+    "server": "cloudflare"
+  },
+  "rawBody": "",
+  "notes": "no x402 challenge parsed from status=404"
+}

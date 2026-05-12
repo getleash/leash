@@ -1,0 +1,33 @@
+{
+  "namespace": "coingecko",
+  "provider": "CoinGecko",
+  "url": "https://mcp.api.coingecko.com/mcp",
+  "shape": "mcp",
+  "ok": false,
+  "status": 200,
+  "rawHeaders": {
+    "access-control-allow-headers": "Content-Type, Accept, Authorization, mcp-session-id, mcp-protocol-version",
+    "access-control-allow-methods": "GET, POST, DELETE, OPTIONS",
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "mcp-session-id",
+    "access-control-max-age": "86400",
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "cache-control": "no-cache",
+    "cf-ray": "9fa82f10a980f98a-PRG",
+    "connection": "keep-alive",
+    "content-type": "text/event-stream",
+    "date": "Tue, 12 May 2026 08:51:50 GMT",
+    "mcp-session-id": "9850ed52a019cdd0af3a6ba18e6453436c63a15f1d84e9635fe637d8563ce7c4",
+    "server": "cloudflare",
+    "transfer-encoding": "chunked"
+  },
+  "rawBody": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "error": {
+      "code": -32603,
+      "message": "Unknown tool: get_price"
+    }
+  },
+  "notes": "no x402 parsed from tools/call status=200"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "leash",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A scoped wallet for AI agents that pay for APIs. MCP proxy + on-chain session keys + x402 / USDC on Base.",
+  "license": "MIT",
+  "author": "Stepan Kouba",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getleash/leash.git"
+  },
+  "homepage": "https://getleash.dev",
+  "bugs": "https://github.com/getleash/leash/issues",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm test --workspaces",
+    "clean": "npm run clean --workspaces --if-present",
+    "demo:skeleton": "tsx scripts/demo-skeleton.ts",
+    "sync-abis": "tsx scripts/sync-abis.ts",
+    "sync-deployments": "tsx scripts/sync-deployments.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "tool": "coinmarketcap__get_price",
+  "arguments": { "symbol": "BTC" },
+  "response": {
+    "price": "$67,432",
+    "quoted_at": "2026-04-16T17:24:18Z",
+    "cost_usdc": "0.01",
+    "remaining_daily_usdc": "0.99"
+  }
+}

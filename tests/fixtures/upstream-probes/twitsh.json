@@ -1,0 +1,23 @@
+{
+  "namespace": "twitsh",
+  "provider": "twit.sh",
+  "url": "https://x402.twit.sh/",
+  "shape": "rest",
+  "ok": false,
+  "status": 200,
+  "rawHeaders": {
+    "accept-ranges": "bytes",
+    "cache-control": "public, max-age=0",
+    "content-length": "2320",
+    "content-type": "text/html; charset=utf-8",
+    "date": "Tue, 12 May 2026 08:51:54 GMT",
+    "etag": "W/\"910-19df31c0100\"",
+    "last-modified": "Mon, 04 May 2026 13:09:52 GMT",
+    "server": "railway-edge",
+    "x-powered-by": "Express",
+    "x-railway-edge": "railway/europe-west4-drams3a",
+    "x-railway-request-id": "Kg7WYW-pQtaq2LVS0-QtfA"
+  },
+  "rawBody": "<!doctype html>\n<html lang=\"en\" class=\"dark\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>twit.sh — Plug AI agents into X</title>\n    <meta name=\"description\" content=\"Real-time Twitter/X data for AI agents. No sign-up, no API keys. Pay per request in USDC on Base via x402. Fully autonomous.\" />\n\n    <!-- Open Graph -->\n    <meta property=\"og:type\"        content=\"website\" />\n    <meta property=\"og:url\"         content=\"https://twit.sh\" />\n    <meta property=\"og:title\"       content=\"twit.sh — Plug AI agents into X\" />\n    <meta property=\"og:description\" content=\"Real-time Twitter/X data for AI agents. No sign-up, no API keys. Pay per request in USDC on Base via x402.\" />\n    <meta property=\"og:image\"       content=\"https://twit.sh/og-image.png\" />\n    <meta property=\"og:image:width\"  content=\"1200\" />\n    <meta property=\"og:image:height\" content=\"630\" />\n\n    <!-- Twitter / X card -->\n    <meta name=\"twitter:card\"        content=\"summary_large_image\" />\n    <meta name=\"twitter:site\"        content=\"@twitdotsh\" />\n    <meta name=\"twitter:title\"       content=\"twit.sh — Plug AI agents into X\" />\n    <meta name=\"twitter:description\" content=\"Real-time Twitter/X data for AI agents. No sign-up, no API keys. Pay per request in USDC on Base via x402.\" />\n    <meta name=\"twitter:image\"       content=\"https://twit.sh/og-image.png\" />\n\n    <link rel=\"icon\" type=\"image/x-icon\" href=\"/favicon.ico\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\" />\n    <link rel=\"manifest\" href=\"/site.webmanifest\" />\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n    <link href=\"https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap\" rel=\"stylesheet\" />\n    <script type=\"module\" crossorigin src=\"/assets/index-DPhpjEMf.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-Dwi_e2Ab.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n",
+  "notes": "no x402 challenge parsed from status=200"
+}

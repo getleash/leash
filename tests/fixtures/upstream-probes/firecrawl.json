@@ -1,0 +1,21 @@
+{
+  "namespace": "firecrawl",
+  "provider": "Firecrawl",
+  "url": "https://api.firecrawl.dev/v1/scrape",
+  "shape": "rest",
+  "ok": false,
+  "status": 401,
+  "rawHeaders": {
+    "access-control-allow-origin": "*",
+    "content-length": "40",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Tue, 12 May 2026 08:51:50 GMT",
+    "etag": "W/\"28-FUA6V4JbfRf7Mh4r5bmwNPsixTA\"",
+    "x-response-time": "0.348ms"
+  },
+  "rawBody": {
+    "success": false,
+    "error": "Unauthorized"
+  },
+  "notes": "no x402 challenge parsed from status=401"
+}

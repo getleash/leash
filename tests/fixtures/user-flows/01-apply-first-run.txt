@@ -1,0 +1,20 @@
+Parsed cryptonit-policy.md ✓
+
+First run detected — generating a new hub owner.
+
+  ✓ Generated a new hub owner key (secp256k1).
+  ✓ Private key stored in macOS Keychain (service: com.leash.owner).
+  ✓ Config written to ./.leash/config.json.
+
+  Your hub address (counterfactual, not yet deployed):
+
+      0xHub11111111111111111111111111111111111111
+
+  Fund this address with USDC on Base, then rerun `leash apply`:
+
+      • Network:      Base mainnet (chainId 8453)
+      • Token:        USDC (0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913)
+      • Recommended:  at least 5 USDC
+                      (≈ 500 CMC price lookups + gas reserve)
+
+  Verify funding anytime with `leash status`.

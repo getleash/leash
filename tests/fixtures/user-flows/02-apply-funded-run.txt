@@ -1,0 +1,53 @@
+Parsed cryptonit-policy.md ✓
+Hub 0xHub1111… balance: 5.00 USDC ✓
+
+Summary
+  Agent:             cryptonit
+  Chain:             base (8453)
+  Validity:          30 days (expires 2026-05-16 17:22 UTC)
+  Initial funding:   1.00 USDC  (from hub → sub-account)
+
+Limits
+  per-transaction:    0.10 USDC
+  daily:              1.00 USDC
+  weekly:             5.00 USDC
+  monthly:           15.00 USDC
+
+Upstreams (resolved live)
+  coinmarketcap
+    url:       https://mcp.coinmarketcap.com/x402/mcp
+    recipient: 0x271189c860Db25bC43173B0335784aD68a680908
+    price:     0.01 USDC per call
+    tools:     12 (get_price, get_listings, get_quotes, ...)
+
+Recovery
+  drain_to_hub:      enabled  (hub 0xHub1111… can pull all funds, anytime)
+
+On-chain actions that will run
+  1. Deploy hub contract                     (one-time, ≈ 0.0001 ETH gas)
+  2. Deploy sub-account for cryptonit        (≈ 0.0002 ETH gas)
+  3. Register session key (expires 2026-05-16)
+  4. Fund sub-account with 1.00 USDC from hub
+
+Hub balance before: 5.00 USDC / 0.0050 ETH
+Hub balance after:  4.00 USDC / 0.0043 ETH (estimated)
+
+Confirm? [y/N] y
+
+  Deploying hub ........................... ✓ 0xHub1111…  tx 0xaaa…
+  Deploying sub-account for cryptonit ..... ✓ 0xSub2222…  tx 0xbbb…
+  Registering session key (2026-05-16) .... ✓ tx 0xccc…
+  Funding sub-account with 1.00 USDC ...... ✓ tx 0xddd…
+
+  ✓ cryptonit is ready.
+  ✓ Wrote .mcp.json — open Claude Code in this directory and the
+    leash tools will be available.
+
+      {
+        "mcpServers": {
+          "leash": {
+            "command": "leash",
+            "args": ["serve", "cryptonit"]
+          }
+        }
+      }

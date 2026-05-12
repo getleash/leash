@@ -1,0 +1,21 @@
+Summary
+  Sub-account:    0xSub2222…
+  Session key:    0xSessKey4444…   (expires 2026-05-16, ~1.00 USDC today)
+  Action:         remove session key on-chain
+  Signed by:      hub owner (Keychain)
+
+This is irreversible. After revocation:
+  • The agent cannot sign any more paid calls.
+  • `leash apply <policy>` will register a fresh key if you want to re-enable.
+  • Any in-flight UserOp already in the mempool may still land — on-chain
+    validation will reject it after the revoke tx is mined.
+
+Confirm? [y/N] y
+
+  Submitting UserOp ................. ✓ user_op 0xuop…
+  Waiting for on-chain confirmation . ✓ block 18223222  tx 0xrev…
+
+  cryptonit session key is revoked.
+  Sub-account 0xSub2222… is inert.  1.87 USDC remains in it.
+  Run `leash drain cryptonit` to reclaim that balance to the hub,
+  or `leash apply ./cryptonit-policy.md` to register a new session key.

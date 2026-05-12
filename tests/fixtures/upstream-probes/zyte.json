@@ -1,0 +1,25 @@
+{
+  "namespace": "zyte",
+  "provider": "Zyte",
+  "url": "https://api-x402.zyte.com/v1/extract",
+  "shape": "rest",
+  "ok": false,
+  "status": 401,
+  "rawHeaders": {
+    "access-control-allow-credentials": "true",
+    "access-control-allow-headers": "DNT, Keep-Alive, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization, X-Project-Key",
+    "access-control-allow-methods": "GET, PUT, POST, DELETE, PATCH, OPTIONS",
+    "access-control-expose-headers": "*, X-Project-Key",
+    "access-control-max-age": "1728000",
+    "connection": "keep-alive",
+    "content-length": "202",
+    "content-type": "application/problem+json",
+    "date": "Tue, 12 May 2026 08:51:52 GMT",
+    "request-id": "835e5fc71462d7505f4ce3aa24073a2f",
+    "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+    "vary": "Accept-Encoding",
+    "www-authenticate": "Basic realm=\"Zyte API\""
+  },
+  "rawBody": "{\"type\":\"/auth/not-valid\",\"title\":\"Authentication Info Invalid\",\"status\":401,\"detail\":\"No valid authentication info found in the request. Check the documentation for the correct authentication schema.\"}",
+  "notes": "no x402 challenge parsed from status=401"
+}

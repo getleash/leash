@@ -1,0 +1,18 @@
+{
+  "namespace": "imference",
+  "provider": "Imference",
+  "url": "https://imference.com/ondemand/generate",
+  "shape": "rest",
+  "ok": false,
+  "status": 404,
+  "rawHeaders": {
+    "connection": "keep-alive",
+    "content-length": "18",
+    "content-type": "text/plain",
+    "date": "Tue, 12 May 2026 08:51:53 GMT",
+    "x-azure-ref": "20260512T085153Z-1669c75c96brp9rnhC1FRAcxgw00000007k0000000022mph",
+    "x-cache": "CONFIG_NOCACHE"
+  },
+  "rawBody": "404 page not found",
+  "notes": "no x402 challenge parsed from status=404"
+}

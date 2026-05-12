@@ -1,0 +1,15 @@
+{
+  "tool": "coinmarketcap__get_price",
+  "arguments": { "symbol": "BTC" },
+  "error": {
+    "isError": true,
+    "code": "ON_CHAIN_REVOKED",
+    "category": "auth",
+    "text": "Leash: session key for cryptonit was revoked on-chain at block 18223222. Ask the user to run `leash apply cryptonit-policy.md` to re-enable.",
+    "details": {
+      "revoked_at_block": 18223222,
+      "revoked_at_tx": "0xrev…"
+    },
+    "suggested_action": "leash apply cryptonit-policy.md"
+  }
+}

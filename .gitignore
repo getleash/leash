@@ -1,0 +1,39 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+
+# Internal-only — NOT for the public repo. These directories belong in
+# the operator's private workspace at /Users/stepan/Source/leash/ and
+# should never end up in this repo. Listing them here is defensive in
+# case of an accidental copy.
+summary/
+CLAUDE.md
+.claude/
+poc/
+
+# Local state
+.leash/
+
+# Session keys (generated, contains private key material)
+session-key.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/**/dry-run/
+poc/*/out/
+poc/*/cache/
+poc/*/broadcast/**/dry-run/
+
+# SQLite
+*.db
+*.db-journal
+*.db-wal

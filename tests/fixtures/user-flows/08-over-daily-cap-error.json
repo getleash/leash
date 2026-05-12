@@ -1,0 +1,16 @@
+{
+  "tool": "coinmarketcap__get_price",
+  "arguments": { "symbol": "BTC" },
+  "error": {
+    "isError": true,
+    "code": "OVER_DAILY_CAP",
+    "category": "budget",
+    "text": "Leash: today's budget of 1.00 USDC is spent. 0.00 USDC remaining until 2026-04-17 00:00 UTC. Increase daily_limit in cryptonit-policy.md and re-apply, or wait for reset.",
+    "details": {
+      "window": "daily",
+      "remaining_usdc": "0.00",
+      "resets_at": "2026-04-17T00:00:00Z"
+    },
+    "suggested_action": "wait for reset or edit policy.md → increase daily_limit"
+  }
+}

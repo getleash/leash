@@ -1,0 +1,6 @@
+@openzeppelin/=lib/openzeppelin-contracts/
+@account-abstraction/=lib/account-abstraction/
+kernel/=lib/kernel/src/
+solady/=lib/kernel/lib/solady/src/
+forge-std/=lib/kernel/lib/forge-std/src/
+ExcessivelySafeCall/=lib/kernel/lib/ExcessivelySafeCall/src/

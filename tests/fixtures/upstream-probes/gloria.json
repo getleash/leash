@@ -1,0 +1,135 @@
+{
+  "namespace": "gloria",
+  "provider": "Gloria AI",
+  "url": "https://api.itsgloria.ai/news",
+  "shape": "rest",
+  "ok": true,
+  "status": 402,
+  "rawHeaders": {
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "cf-cache-status": "DYNAMIC",
+    "cf-ray": "9fa82f24b881ae1d-PRG",
+    "connection": "keep-alive",
+    "content-length": "1559",
+    "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Tue, 12 May 2026 08:51:53 GMT",
+    "etag": "W/\"617-VHYnSK2P20B1jmv95CQDKalEEVE\"",
+    "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=yRBTtqPwPlAeeIH9FdXZwa9yI3L4cdfnpkwe4DHnZGgPKFKZtGFxw73x6NZBye8bFBBgFeESz44bCqqV5PfYyQ0M6n1tFIck9Jd5F%2BtMp0lxFhrhCVll6D7dGGiy2BeiJSwe\"}]}",
+    "server": "cloudflare",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-powered-by": "Express",
+    "x-xss-protection": "1; mode=block"
+  },
+  "rawBody": {
+    "x402Version": 1,
+    "error": "X-PAYMENT header is required",
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "base",
+        "maxAmountRequired": "30000",
+        "resource": "https://api.itsgloria.ai/news",
+        "description": "Get the latest news about a covered news topic, delivering the most recent 10 headlines.",
+        "mimeType": "application/json",
+        "payTo": "0xCa1271E777C209e171826A681855351f4989cd0c",
+        "maxTimeoutSeconds": 60,
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "outputSchema": {
+          "input": {
+            "type": "http",
+            "method": "GET",
+            "discoverable": true,
+            "queryParams": {
+              "feed_categories": {
+                "type": "string",
+                "description": "Comma separated list of feed categories. Available categories: ai, ai_agents, base, bitcoin, crypto, dats, defi, ethereum, hyperliquid, machine_learning, macro, perps, rwa, ripple, solana, tech",
+                "required": true
+              },
+              "from_date": {
+                "type": "string",
+                "description": "Get the news from this date (YYYY-MM-DD format)",
+                "required": false
+              },
+              "to_date": {
+                "type": "string",
+                "description": "Get the news up to this date (YYYY-MM-DD format)",
+                "required": false
+              }
+            }
+          },
+          "output": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "signal": {
+                  "type": "string"
+                },
+                "sentiment": {
+                  "type": "string"
+                },
+                "sentiment_value": {
+                  "type": "number"
+                },
+                "timestamp": {
+                  "type": "number"
+                },
+                "feed_categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "short_context": {
+                  "type": "string"
+                },
+                "long_context": {
+                  "type": "string"
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "author": {
+                  "type": "string"
+                },
+                "tokens": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tweet_url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "extra": {
+          "name": "USD Coin",
+          "version": "2"
+        }
+      }
+    ]
+  },
+  "payTo": "0xCa1271E777C209e171826A681855351f4989cd0c",
+  "amount": "30000",
+  "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "network": "base",
+  "x402Version": 1,
+  "challengeLocation": "body",
+  "usdcDomain": {
+    "name": "USD Coin",
+    "version": "2"
+  }
+}

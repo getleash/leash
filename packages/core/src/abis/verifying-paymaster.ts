@@ -1,0 +1,80 @@
+export const verifyingPaymasterAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: '_entryPoint', type: 'address' },
+      { name: '_verifyingSigner', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'getHash',
+    inputs: [
+      {
+        name: 'userOp',
+        type: 'tuple',
+        components: [
+          { name: 'sender', type: 'address' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'initCode', type: 'bytes' },
+          { name: 'callData', type: 'bytes' },
+          { name: 'accountGasLimits', type: 'bytes32' },
+          { name: 'preVerificationGas', type: 'uint256' },
+          { name: 'gasFees', type: 'bytes32' },
+          { name: 'paymasterAndData', type: 'bytes' },
+          { name: 'signature', type: 'bytes' },
+        ],
+      },
+      { name: 'validUntil', type: 'uint48' },
+      { name: 'validAfter', type: 'uint48' },
+    ],
+    outputs: [{ name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'verifyingSigner',
+    inputs: [],
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'setVerifyingSigner',
+    inputs: [{ name: '_newSigner', type: 'address' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'deposit',
+    inputs: [],
+    outputs: [],
+    stateMutability: 'payable',
+  },
+  {
+    type: 'function',
+    name: 'withdrawTo',
+    inputs: [
+      { name: 'withdrawAddress', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'getDeposit',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'addStake',
+    inputs: [{ name: 'unstakeDelaySec', type: 'uint32' }],
+    outputs: [],
+    stateMutability: 'payable',
+  },
+] as const;

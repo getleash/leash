@@ -1,0 +1,11 @@
+{
+  "tool": "get_api_budget",
+  "response": {
+    "daily_remaining_usdc": "0.87",
+    "weekly_remaining_usdc": "4.87",
+    "monthly_remaining_usdc": "14.87",
+    "spent_today_usdc": "0.13",
+    "session_key_expires_at": "2026-05-16T17:22:00Z",
+    "sub_account_balance_usdc": "0.87"
+  }
+}

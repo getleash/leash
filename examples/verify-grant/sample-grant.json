@@ -1,0 +1,28 @@
+{
+  "grant": {
+    "id": "0199c0de-0000-7000-8000-000000000001",
+    "principal": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "agent": "0x6C718844Aaa21cAad240C2F968173095f62b40D9",
+    "subAccount": "0x6bD660201f64De3064D94Be02D3EaFb5978F2022",
+    "chain": "base",
+    "validFrom": 1760000000,
+    "validUntil": 1762592000,
+    "purpose": "Pay CoinMarketCap Pro per-call for market data.",
+    "limits": {
+      "maxPerTransaction": "100000",
+      "daily": "1000000",
+      "weekly": "5000000",
+      "monthly": "15000000"
+    },
+    "upstreams": [
+      {
+        "name": "coinmarketcap",
+        "url": "https://mcp.coinmarketcap.com/x402/mcp",
+        "namespace": "coinmarketcap"
+      }
+    ],
+    "counterparties": [],
+    "policyHash": "0xcbd601d8016a0ca5aeb440582a7e4ff85b923f67f8014ba67d62aea7b3bff80b"
+  },
+  "signature": "0xc21dc93725f30163da8f324faa3deb23b8c76ff6f543cd27026c3828ca9b01993c3e97a05ae70c6471f0e7c4c5892a7b9786e3720859fd186ac24ec7dd2147801b"
+}

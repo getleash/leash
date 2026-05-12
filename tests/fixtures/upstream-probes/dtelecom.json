@@ -1,0 +1,8 @@
+{
+  "namespace": "dtelecom",
+  "provider": "dTelecom STT",
+  "url": "https://x402stt.dtelecom.org/",
+  "shape": "rest",
+  "ok": false,
+  "notes": "fetch failed: fetch failed"
+}

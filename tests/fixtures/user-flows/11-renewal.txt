@@ -1,0 +1,27 @@
+Parsed cryptonit-policy.md ✓
+
+  This agent is already deployed. `apply` will rotate its session key.
+
+Summary
+  Agent:              cryptonit
+  Current session:    expired 2026-05-16 17:22 UTC (yesterday)
+  New session:        expires 2026-06-16 14:05 UTC (30 days)
+  Allowlist:          unchanged
+  Limits:             unchanged
+  Balance:            0.87 USDC  (unchanged — no additional funding)
+
+On-chain actions that will run
+  1. Revoke old session key (tx)
+  2. Register new session key (tx)
+
+Hub balance before: 4.13 USDC / 0.0041 ETH
+Hub balance after:  4.13 USDC / 0.0038 ETH (estimated)
+
+Confirm? [y/N] y
+
+  Revoking old session key ........... ✓ tx 0xrev…
+  Registering new session key ........ ✓ tx 0xreg…
+
+  cryptonit is ready again. New session key, same limits, same balance.
+
+  (.mcp.json does not need to change — it already points at `leash serve cryptonit`.)

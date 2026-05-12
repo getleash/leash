@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "leash": {
+      "command": "leash",
+      "args": ["serve", "cryptonit"]
+    }
+  }
+}

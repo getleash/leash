@@ -1,0 +1,23 @@
+{
+  "namespace": "browserbase",
+  "provider": "Browserbase",
+  "url": "https://x402.browserbase.com/sessions",
+  "shape": "rest",
+  "ok": false,
+  "status": 404,
+  "rawHeaders": {
+    "connection": "keep-alive",
+    "content-length": "148",
+    "content-security-policy": "default-src 'none'",
+    "content-type": "text/html; charset=utf-8",
+    "date": "Tue, 12 May 2026 08:51:51 GMT",
+    "via": "1.1 cf2071a2896a4f71dbfdbc521d554362.cloudfront.net (CloudFront)",
+    "x-amz-cf-id": "Ui9LckbHwZtnFbl9B0Eh4LTx2fp69yQ7jTytTVBFue_tFuO_lysBAA==",
+    "x-amz-cf-pop": "FRA56-P5",
+    "x-cache": "Error from cloudfront",
+    "x-content-type-options": "nosniff",
+    "x-powered-by": "Express"
+  },
+  "rawBody": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /sessions</pre>\n</body>\n</html>\n",
+  "notes": "no x402 challenge parsed from status=404"
+}

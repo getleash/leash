@@ -1,0 +1,16 @@
+{
+  "tool": "coinmarketcap__get_price",
+  "arguments": { "symbol": "BTC" },
+  "error": {
+    "isError": true,
+    "code": "INSUFFICIENT_FUNDS",
+    "category": "funds",
+    "text": "Leash: cryptonit's sub-account holds 0.00 USDC, but this call needs 0.01 USDC. Ask the user to run `leash fund cryptonit <amount>` to top it up from the hub.",
+    "details": {
+      "balance_usdc": "0.00",
+      "required_usdc": "0.01",
+      "recipient": "0x271189…0908"
+    },
+    "suggested_action": "leash fund cryptonit 1.00"
+  }
+}

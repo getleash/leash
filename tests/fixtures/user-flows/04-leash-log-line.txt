@@ -1,0 +1,3 @@
+17:24:18  coinmarketcap__get_price(symbol=BTC)
+          paid 0.01 USDC → 0x271189…0908
+          tx 0xpay… (facilitator 0xcdp…)   remaining today: 0.99 USDC

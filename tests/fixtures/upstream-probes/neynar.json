@@ -1,0 +1,58 @@
+{
+  "namespace": "neynar",
+  "provider": "Neynar",
+  "url": "https://api.neynar.com/v2/farcaster/user/bulk",
+  "shape": "rest",
+  "ok": true,
+  "status": 402,
+  "rawHeaders": {
+    "access-control-allow-origin": "*",
+    "cache-control": "no-store",
+    "connection": "keep-alive",
+    "content-length": "473",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Tue, 12 May 2026 08:51:52 GMT",
+    "etag": "W/\"1d9-Tb2kd0uV2B7F2UfXzpNZBF+tDUY\"",
+    "vary": "Accept-Encoding",
+    "www-authenticate": "Payment id=\"MZUhhSrXjQjQBUwm8MT7HLIz43kpJqfXBeIiSomipxE\", realm=\"Neynar API\", method=\"tempo\", intent=\"charge\", request=\"eyJjdXJyZW5jeSI6IjB4MjBjMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsImV4cGlyZXMiOiIyMDI2LTA1LTEyVDA4OjU2OjUyLjczNloiLCJyZWNpcGllbnQiOiIweEE2YTg3MzZmMThmMzgzZjFjYzJkOTM4NTc2OTMzRTVlQTdEZjAxQTEiLCJhbW91bnQiOiIxMDAwMCIsIm1ldGhvZERldGFpbHMiOnsiY2hhaW5JZCI6NDIxN319\", expires=\"2026-05-12T08:56:52.736Z\"",
+    "x-powered-by": "Express"
+  },
+  "rawBody": {
+    "x402Version": 1,
+    "error": "X-PAYMENT header or API key required",
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "base",
+        "maxAmountRequired": "10000",
+        "resource": "http://api.neynar.com/farcaster/user/bulk",
+        "description": "",
+        "mimeType": "",
+        "payTo": "0xA6a8736f18f383f1cc2d938576933E5eA7Df01A1",
+        "maxTimeoutSeconds": 60,
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "outputSchema": {
+          "input": {
+            "type": "http",
+            "method": "GET",
+            "discoverable": true
+          }
+        },
+        "extra": {
+          "name": "USD Coin",
+          "version": "2"
+        }
+      }
+    ]
+  },
+  "payTo": "0xA6a8736f18f383f1cc2d938576933E5eA7Df01A1",
+  "amount": "10000",
+  "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "network": "base",
+  "x402Version": 1,
+  "challengeLocation": "body",
+  "usdcDomain": {
+    "name": "USD Coin",
+    "version": "2"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "tool": "coinmarketcap__get_price",
+  "arguments": { "symbol": "BTC" },
+  "error": {
+    "isError": true,
+    "code": "SESSION_KEY_EXPIRED",
+    "category": "auth",
+    "text": "Leash: session key for cryptonit expired at 2026-05-16 17:22 UTC. Ask the user to run `leash apply cryptonit-policy.md` to renew.",
+    "details": {
+      "expired_at": "2026-05-16T17:22:00Z"
+    },
+    "suggested_action": "leash apply cryptonit-policy.md"
+  }
+}

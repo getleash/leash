@@ -1,0 +1,26 @@
+{
+  "namespace": "freepik",
+  "provider": "Freepik / Magnific",
+  "url": "https://api.freepik.com/v1/x402/ai/mystic",
+  "shape": "rest",
+  "ok": false,
+  "status": 401,
+  "rawHeaders": {
+    "alt-svc": "h3=\":443\"; ma=93600",
+    "cache-control": "max-age=0, no-cache, no-store",
+    "connection": "close",
+    "content-length": "290",
+    "content-type": "application/json",
+    "date": "Tue, 12 May 2026 08:51:52 GMT",
+    "expires": "Tue, 12 May 2026 08:51:52 GMT",
+    "pragma": "no-cache",
+    "set-cookie": "ak_bmsc=779316F67924DCC633FF52FCB5C57935~000000000000000000000000000000~YAAQRKA3F8OxLfOdAQAAyK1iGx9Qi/zgKprCccOKV+alGQBAI+ly4TWVWtwndjeeoJFly4E8sWS10+hxyCz3fLcIy1kwFhJAIwilyeSJU7YuZ8jep6yP9ocG1wXBiH2UlTzbm5cjntkbjKyRIDSY8w5F92XA3solJihLgBYGx+l31tlpv0Plap97gZVfNWPpqN1vCR57ec4Y/fn1hSUBltq3j1biYK+AmtvDdJZZBwE2BTKj3EZDbde4a8udNdChipqi5KxhwxUoVA1SrvRcAtPzLnW9N7p3uLOpJYJVp2OQRQJqYiFUhQGJM5LEpoOP+zZkyky3k2Yw4wgLBTaj9mun52umLcC/0JA+7nrjUblMNgmzsTz2crC+wxpFwnAeWg==; Domain=.freepik.com; Path=/; Expires=Tue, 12 May 2026 10:51:52 GMT; Max-Age=7200; HttpOnly",
+    "strict-transport-security": "max-age=31536000 ; includeSubDomains ; preload",
+    "www-authenticate": "apikey realm=\"key\"",
+    "x-request-id": "ak-a9e24ccf29487b106a3c807c86219e69"
+  },
+  "rawBody": {
+    "message": "Unauthorized: No API key provided. Please obtain an API key at https://www.magnific.com/api. If you already have one, verify it at https://www.magnific.com/developers/dashboard/api-key. For more details, refer to our API documentation: https://docs.magnific.com/introduction."
+  },
+  "notes": "no x402 challenge parsed from status=401"
+}
