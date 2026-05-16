@@ -6,14 +6,18 @@ dist/
 .env
 .env.local
 
-# Internal-only — NOT for the public repo. These directories belong in
-# the operator's private workspace at /Users/stepan/Source/leash/ and
-# should never end up in this repo. Listing them here is defensive in
-# case of an accidental copy.
+# Internal-only — these directories belong in the operator's private
+# workspace at /Users/stepan/Source/leash/ and should never end up in
+# this repo. Listing them here is defensive in case of an accidental copy.
 summary/
-CLAUDE.md
-.claude/
 poc/
+
+# Claude Code: commit CLAUDE.md + the curated `.claude/` assets
+# (settings.json, commands/, skills/), but ignore generated session state.
+.claude/worktrees/
+.claude/plans/
+.claude/sessions/
+.claude/settings.local.json
 
 # Local state
 .leash/

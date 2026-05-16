@@ -17,6 +17,36 @@ import {VerifyingPaymaster} from "../src/VerifyingPaymaster.sol";
 
 /// @notice Phase 8 — one-shot full-stack deploy.
 ///
+/// ┌─ What this script is (and isn't) for ──────────────────────────┐
+/// │                                                                │
+/// │ Leash's production model is **singleton contracts**: every     │
+/// │ user of `leash apply` points at the SAME canonical LeashFactory│
+/// │ + SessionKeyValidator + VerifyingPaymaster deployed by the     │
+/// │ maintainer on Base mainnet. Per-user state lives in CREATE2-   │
+/// │ deployed hub/sub Kernels, not in re-deployed Leash contracts.  │
+/// │                                                                │
+/// │ The canonical mainnet addresses are recorded in                │
+/// │ `packages/core/src/constants.ts`. `leash apply` reads them     │
+/// │ from there. End-users do NOT run this script.                  │
+/// │                                                                │
+/// │ This script exists for three reasons only:                     │
+/// │   1. Auditable transparency — the recipe that produced the     │
+/// │      canonical mainnet deployment, reproducible from the       │
+/// │      vendored Kernel submodule commit.                         │
+/// │   2. Local dev / integration tests — deploy a private stack    │
+/// │      on Sepolia or `anvil` for development without touching    │
+/// │      mainnet.                                                  │
+/// │   3. Forking — someone wants a Leash-shaped stack under a      │
+/// │      different brand or on a different chain.                  │
+/// │                                                                │
+/// │ ⚠️ This script broadcasts whatever you point `--rpc-url` at.   │
+/// │   Pointing at mainnet deploys real contracts and burns real    │
+/// │   ETH (~$30–80 at typical gas prices for the full six-step    │
+/// │   stack). Default to a testnet (`--rpc-url $SEPOLIA_RPC`) for │
+/// │   local dev. There is no testnet-only safety check in this    │
+/// │   script — the responsibility is on the caller.                │
+/// └────────────────────────────────────────────────────────────────┘
+///
 /// Deploys, in this order:
 ///   1. Kernel implementation                (vendored from contracts/lib/kernel)
 ///   2. KernelFactory(kernelImpl)
@@ -37,6 +67,21 @@ import {VerifyingPaymaster} from "../src/VerifyingPaymaster.sol";
 ///       --chain base \
 ///       --broadcast \
 ///       --verify
+///
+/// RPC consistency caveat (load-balanced public endpoints):
+///   After this script's broadcast returns, downstream tooling (e.g. the
+///   CLI's `apply` flow, or any script that calls `sync-deployments` then
+///   immediately reads contract state) may observe zeroed reads for **3–5
+///   seconds** before all RPC nodes catch up. The public endpoint at
+///   `https://mainnet.base.org` is the worst offender; a dedicated RPC
+///   (Alchemy, QuickNode) usually removes the lag entirely.
+///
+///   In practice this matters most for `installModule` on a freshly-
+///   deployed Kernel — see `packages/cli/src/commands/apply.ts` for the
+///   sleep-then-verify pattern. If you script around this deploy, add a
+///   5-second sleep before any post-broadcast state assertion, or wrap
+///   the read in a retry transport (`viem`'s `http(url, { retryCount,
+///   retryDelay })`).
 ///
 /// Env (required):
 ///   DEPLOYER_PRIVATE_KEY         — pays gas for all six deploys
