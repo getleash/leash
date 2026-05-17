@@ -48,8 +48,30 @@ export class RestHttpClient implements UpstreamClient {
       );
     }
     const { url, init } = buildRequest(this.adapter.baseUrl, tool, args, extraHeaders);
+    // TEMP DEBUG (remove before commit): log to a file so we can capture
+    // request/response shape across the spawned leash subprocess (stderr
+    // is swallowed by the MCP transport under `claude --print`).
+    const debugPath = process.env.LEASH_DEBUG_REST;
+    if (debugPath) {
+      const isRetry = !!extraHeaders && Object.keys(extraHeaders).length > 0;
+      const fs = await import('node:fs/promises');
+      await fs.appendFile(
+        debugPath,
+        `${new Date().toISOString()} [${isRetry ? 'RETRY' : 'PROBE'}] ${init.method} ${url}\n` +
+          `  args=${JSON.stringify(args)}\n` +
+          `  body=${typeof init.body === 'string' ? init.body : String(init.body)}\n` +
+          `  headers=${JSON.stringify(Object.keys(init.headers ?? {}))}\n`,
+      );
+    }
     const res = await fetch(url, init);
     const bodyText = await res.text();
+    if (debugPath) {
+      const fs = await import('node:fs/promises');
+      await fs.appendFile(
+        debugPath,
+        `  ↳ ${res.status} | body[:300]=${bodyText.slice(0, 300)}\n\n`,
+      );
+    }
     return {
       status: res.status,
       headers: res.headers,

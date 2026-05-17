@@ -204,10 +204,15 @@ export function registerLeashTools(server: McpServer, ctx: ToolContext): void {
           description:
             tool.description ??
             `Forwarded tool from ${upstream.name}. Calls ${upstream.name}.${tool.name} with automatic x402 payment on 402.`,
-          // Pass-through shape — the upstream does its own input
-          // validation. Claude sees the upstream's inputSchema in
-          // the tool manifest (via listTools in proxy/upstream-session.ts).
-          inputSchema: {},
+          // Translate the upstream's JSON-schema properties into a
+          // ZodRawShape. The MCP SDK wraps a ZodRawShape in
+          // `z.object(shape)`, which strict-strips unknown keys — so
+          // a `{}` here drops EVERY arg before reaching the handler
+          // and the upstream sees an empty body / no query params
+          // (then takes the payment and 400s on its own validation).
+          // We pass the real shape so the agent's args flow through
+          // intact; the upstream still does its own final validation.
+          inputSchema: jsonSchemaToZodShape(tool.inputSchema),
         },
         async (args: Record<string, unknown>): Promise<CallToolResult> => {
           return caller.callTool(tool.name, args);
@@ -215,4 +220,57 @@ export function registerLeashTools(server: McpServer, ctx: ToolContext): void {
       );
     }
   }
+}
+
+/**
+ * Translate a JSON-schema fragment (as published by the upstream's
+ * tool descriptor) into a Zod raw shape suitable for `registerTool`'s
+ * `inputSchema`. Best-effort: handles the basic JSON-schema types we
+ * see in the catalog. Anything we can't classify falls through as
+ * `z.unknown()` — the upstream does the final validation.
+ */
+function jsonSchemaToZodShape(schema: unknown): z.ZodRawShape {
+  if (!schema || typeof schema !== 'object') return {};
+  const s = schema as Record<string, unknown>;
+  const props = s.properties;
+  if (!props || typeof props !== 'object') return {};
+  const required = new Set<string>(
+    Array.isArray(s.required) ? (s.required as string[]) : [],
+  );
+  const shape: z.ZodRawShape = {};
+  for (const [key, raw] of Object.entries(props as Record<string, unknown>)) {
+    if (!raw || typeof raw !== 'object') continue;
+    const field = raw as Record<string, unknown>;
+    let zt: z.ZodTypeAny;
+    switch (field.type) {
+      case 'string':
+        zt = Array.isArray(field.enum)
+          ? z.enum(field.enum as [string, ...string[]])
+          : z.string();
+        break;
+      case 'number':
+      case 'integer':
+        zt = z.number();
+        break;
+      case 'boolean':
+        zt = z.boolean();
+        break;
+      case 'array':
+        zt = z.array(z.unknown());
+        break;
+      case 'object':
+        zt = z.record(z.unknown());
+        break;
+      default:
+        zt = z.unknown();
+    }
+    if (typeof field.description === 'string') {
+      zt = zt.describe(field.description);
+    }
+    if (!required.has(key)) {
+      zt = zt.optional();
+    }
+    shape[key] = zt;
+  }
+  return shape;
 }

@@ -121,24 +121,38 @@ export class PaidToolCaller {
       status: 'pending',
     });
 
-    // 6. Build retry payload (embeds meta.leash = authorization-object reference).
-    const payload = buildPaymentPayload({
-      challenge,
-      chosen,
-      signature: signed.signature,
-      authorization: signed.authorization,
-      leashMeta: {
-        grantId: ctx.runtime.signedGrant.grant.id,
-        grantRef: { inline: ctx.runtime.signedGrant },
-      },
-    });
-    const header = encodeRetryHeader(payload);
-
-    // 7. Retry with payment header.
+    // Anything between here and a `confirmed`/`failed` status update is
+    // wrapped — a thrown error must never leave the row as `pending` or
+    // we silently inflate the budget counter for a call that never went
+    // out the wire.
     try {
-      res = await client.callTool(toolName, args, { [header.name]: header.value });
+      // 6. Build retry payload (embeds meta.leash = authorization-object reference).
+      const payload = buildPaymentPayload({
+        challenge,
+        chosen,
+        signature: signed.signature,
+        authorization: signed.authorization,
+        leashMeta: {
+          grantId: ctx.runtime.signedGrant.grant.id,
+          grantRef: { inline: ctx.runtime.signedGrant },
+        },
+      });
+      const header = encodeRetryHeader(payload);
+
+      // 7. Retry with payment header.
+      try {
+        res = await client.callTool(toolName, args, { [header.name]: header.value });
+      } catch (e) {
+        ctx.db.failPayment({ id: paymentId, error: (e as Error).message });
+        throw e;
+      }
     } catch (e) {
-      ctx.db.failPayment({ id: paymentId, error: (e as Error).message });
+      // Catch-all for the build/encode step too — they're pure but
+      // surfacing them here keeps the payment ledger honest.
+      ctx.db.failPayment({
+        id: paymentId,
+        error: `pre-retry error: ${(e as Error).message}`,
+      });
       throw e;
     }
 
