@@ -72,7 +72,28 @@ function normalize(raw: unknown, source: 'header' | 'body'): X402Challenge {
     throw new X402ParseError('x402 challenge missing accepts[]');
   }
 
-  const normalizedAccepts = accepts.map(normalizeAccepted);
+  // Multi-chain upstreams (invy, azursafe, ottoai, …) publish accepts[]
+  // arrays containing entries for several chains — eg. [eip155:8453,
+  // eip155:1, solana:…]. Each entry is a valid alternative payment path
+  // for a client on the corresponding chain. We're on Base; entries on
+  // chains/schemes we don't handle are not errors, just alternatives we
+  // won't take. Pre-filter by network + scheme strings only — anything
+  // that passes that prefilter goes through `normalizeAccepted` and any
+  // structural error (bad payTo, missing asset, etc.) still bubbles up.
+  const supportedAccepts = accepts.filter(
+    (entry): entry is Record<string, unknown> =>
+      isRecord(entry) &&
+      entry.scheme === 'exact' &&
+      isSupportedNetworkString(entry.network),
+  );
+
+  if (supportedAccepts.length === 0) {
+    throw new X402ParseError(
+      'no usable accepts[] entry — challenge requires a chain/scheme Leash does not support',
+    );
+  }
+
+  const normalizedAccepts = supportedAccepts.map(normalizeAccepted);
   const resource = isRecord(raw.resource)
     ? ({
         url: String(raw.resource.url ?? ''),
@@ -127,6 +148,21 @@ function normalizeNetwork(raw: unknown): X402Network {
     default:
       throw new X402ParseError(`unsupported network "${n}"`);
   }
+}
+
+/**
+ * Cheap string-only check used by the accepts[] prefilter to drop
+ * other-chain entries before we attempt full structural validation.
+ * Keep in sync with `normalizeNetwork`.
+ */
+function isSupportedNetworkString(raw: unknown): boolean {
+  const n = String(raw);
+  return (
+    n === 'base' ||
+    n === 'base-sepolia' ||
+    n === 'eip155:8453' ||
+    n === 'eip155:84532'
+  );
 }
 
 /** Convert an X402 network string (CAIP-2 or shorthand) to an EVM chain id. */
@@ -185,12 +221,12 @@ export function buildPaymentPayload({
     return payload;
   }
 
-  if (!challenge.resource) {
-    throw new X402ParseError('v2 challenge missing resource — cannot echo back');
-  }
+  // `resource` is echoed back when the challenge carries it. Some
+  // upstreams (invy) publish v2 challenges without a `resource` field;
+  // the spec text reads "echo if present" so we omit instead of throwing.
   const payload: X402PaymentPayloadV2 = {
     x402Version: 2,
-    resource: challenge.resource,
+    ...(challenge.resource ? { resource: challenge.resource } : {}),
     accepted: chosen,
     payload: { signature, authorization },
     ...(meta ? { meta } : {}),

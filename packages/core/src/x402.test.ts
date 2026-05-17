@@ -128,9 +128,11 @@ describe('parseX402Challenge (failure modes)', () => {
     ).toThrow(/unsupported x402Version/);
   });
 
-  it('throws on unsupported scheme', () => {
+  it('throws when no accepts[] entry uses a scheme Leash supports', () => {
     const bad = {
       ...CMC_CHALLENGE_V2,
+      // Only `exact` is supported today; a future scheme like
+      // `subscription` or `upTo` would be silently filtered.
       accepts: [{ ...CMC_CHALLENGE_V2.accepts[0], scheme: 'upTo' }],
     };
     expect(() =>
@@ -138,12 +140,13 @@ describe('parseX402Challenge (failure modes)', () => {
         headers: { 'Payment-Required': b64url(JSON.stringify(bad)) },
         body: '',
       }),
-    ).toThrow(/unsupported scheme/);
+    ).toThrow(/no usable accepts\[\] entry/);
   });
 
-  it('throws on unsupported network', () => {
+  it('throws when no accepts[] entry uses a chain/scheme Leash supports', () => {
     const bad = {
       ...CMC_CHALLENGE_V2,
+      // Only an ETH-mainnet entry — Leash is Base-only today.
       accepts: [{ ...CMC_CHALLENGE_V2.accepts[0], network: 'eip155:1' }],
     };
     expect(() =>
@@ -151,7 +154,47 @@ describe('parseX402Challenge (failure modes)', () => {
         headers: { 'Payment-Required': b64url(JSON.stringify(bad)) },
         body: '',
       }),
-    ).toThrow(/unsupported network/);
+    ).toThrow(/no usable accepts\[\] entry/);
+  });
+
+  it('filters a multi-chain accepts[] to keep only Base-compatible entries', () => {
+    // Verbatim shape from the invy / azursafe live 402 (2026-05-16):
+    // they publish [Base, ETH mainnet, Solana] (and friends). Leash
+    // picks the Base entry; the others stay valid for other clients
+    // and Leash should silently drop them, not fail the whole parse.
+    const multi = {
+      ...CMC_CHALLENGE_V2,
+      accepts: [
+        {
+          ...CMC_CHALLENGE_V2.accepts[0],
+          network: 'eip155:8453',
+          payTo: '0x19c5fbc520a3a8c2fa440148193de4543a5fc66a',
+        },
+        {
+          // ETH mainnet — Leash doesn't support, must be dropped.
+          ...CMC_CHALLENGE_V2.accepts[0],
+          network: 'eip155:1',
+          asset: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          payTo: '0x19c5fbc520a3a8c2fa440148193de4543a5fc66a',
+        },
+        {
+          // Solana — unsupported scheme/network shape, must be dropped.
+          ...CMC_CHALLENGE_V2.accepts[0],
+          network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          asset: '0xEPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          payTo: '0x19c5fbc520a3a8c2fa440148193de4543a5fc66a',
+        },
+      ],
+    };
+    const parsed = parseX402Challenge({
+      headers: { 'Payment-Required': b64url(JSON.stringify(multi)) },
+      body: '',
+    });
+    expect(parsed.accepts).toHaveLength(1);
+    expect(parsed.accepts[0].network).toBe('eip155:8453');
+    expect(parsed.accepts[0].payTo).toBe(
+      '0x19c5fbc520a3a8c2fa440148193de4543a5fc66a',
+    );
   });
 
   it('throws on malformed payTo', () => {

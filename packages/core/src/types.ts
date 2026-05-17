@@ -185,7 +185,12 @@ export type X402PaymentPayloadV1 = {
 
 export type X402PaymentPayloadV2 = {
   x402Version: 2;
-  resource: NonNullable<X402Challenge['resource']>;
+  /**
+   * Echoed back from the challenge when present. Optional because some
+   * v2-publishing upstreams (eg. invy) omit it; the facilitator accepts
+   * the retry without echo as long as the rest of the payload matches.
+   */
+  resource?: X402Challenge['resource'];
   /** Mirrors the challenge's chosen accept terms verbatim. */
   accepted: X402Accepted;
   payload: {
