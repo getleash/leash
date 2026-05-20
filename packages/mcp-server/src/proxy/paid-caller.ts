@@ -3,6 +3,8 @@ import {
   type MCPError,
   buildPaymentPayload,
   encodeRetryHeader,
+  erc20Abi,
+  formatUsdc,
   parseX402Challenge,
 } from '@getleash/core';
 import type { ToolContext } from '../tools/types.js';
@@ -82,6 +84,40 @@ export class PaidToolCaller {
     });
     if (!policy.ok) {
       return policyDenialToMcpError(policy.denialCode, policy.details) as unknown as CallToolResult;
+    }
+
+    // 3b. Pre-flight USDC balance check on the sub-account. Without
+    // this the facilitator would try to settle and revert at USDC
+    // (`execution reverted` from the ERC-20 transfer), surfacing as a
+    // generic `FACILITATOR_REJECTED` — agents typically guess "upstream
+    // drift" and waste cycles. With it, the agent gets a clean
+    // INSUFFICIENT_FUNDS pointing at `leash fund`.
+    //
+    // One extra RPC call per paid tool call. Worth it for the UX.
+    const subBalance = (await ctx.publicClient.readContract({
+      address: ctx.runtime.chainConfig.usdc,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [ctx.runtime.agent.subAccount],
+    })) as bigint;
+    if (subBalance < amount) {
+      return buildMcpError({
+        code: 'INSUFFICIENT_FUNDS',
+        category: 'funds',
+        text:
+          `Leash: this tool costs ${formatUsdc(amount)} USDC but the ` +
+          `sub-account ${ctx.runtime.agent.subAccount} holds only ` +
+          `${formatUsdc(subBalance)} USDC. Top up via \`leash fund\` ` +
+          `from the hub, or stop calling paid tools until the user funds.`,
+        details: {
+          upstream: adapter.name,
+          requested_usdc: formatUsdc(amount),
+          available_usdc: formatUsdc(subBalance),
+          sub_account: ctx.runtime.agent.subAccount,
+        },
+        suggested_action:
+          `leash fund ${ctx.runtime.agentName} ${formatUsdc(amount * 2n)}`,
+      }) as unknown as CallToolResult;
     }
 
     // 4. Sign.
