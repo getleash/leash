@@ -66,10 +66,15 @@ export class RestHttpClient implements UpstreamClient {
     const res = await fetch(url, init);
     const bodyText = await res.text();
     if (debugPath) {
+      const isRetry = !!extraHeaders && Object.keys(extraHeaders).length > 0;
       const fs = await import('node:fs/promises');
+      // PROBE: cap at 300 chars (we only need to confirm 402 + see the
+      // start of any error). RETRY: full body — that's the actual
+      // upstream response the agent reasons from.
+      const bodyDump = isRetry ? bodyText : bodyText.slice(0, 300);
       await fs.appendFile(
         debugPath,
-        `  ↳ ${res.status} | body[:300]=${bodyText.slice(0, 300)}\n\n`,
+        `  ↳ ${res.status} | body=${bodyDump}\n\n`,
       );
     }
     return {
