@@ -189,6 +189,15 @@ describe('parsePolicy (field validation with line numbers)', () => {
     expect(() => parsePolicy(bad)).toThrow(/must match/);
   });
 
+  it('accepts a hyphenated upstream namespace (catalog uses e.g. donate-0000402)', () => {
+    const hyphenated = VALID.replace(
+      'namespace: coinmarketcap',
+      'namespace: donate-0000402',
+    );
+    const p = parsePolicy(hyphenated);
+    expect(p.upstreams[0].namespace).toBe('donate-0000402');
+  });
+
   it('parses an optional max_per_call on an upstream', () => {
     const with_cap = VALID.replace(
       '  namespace: coinmarketcap\n',

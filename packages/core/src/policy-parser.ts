@@ -225,9 +225,14 @@ export function parsePolicy(markdown: string): AgentPolicy {
           pendingUpstream.url = kv.value;
           break;
         case 'namespace':
-          if (!/^[a-z][a-z0-9_]*$/.test(kv.value)) {
+          // Lowercase identifier; hyphens allowed because the canonical
+          // catalog already ships names like `donate-0000402` in
+          // `UPSTREAM_PAYTO` and `registry.ts`. The regex must accept
+          // every key in those tables — failing the policy parser on
+          // a name the rest of the codebase blesses is just a footgun.
+          if (!/^[a-z][a-z0-9_-]*$/.test(kv.value)) {
             throw new PolicyParseError(
-              `upstream namespace "${kv.value}" must match /^[a-z][a-z0-9_]*$/`,
+              `upstream namespace "${kv.value}" must match /^[a-z][a-z0-9_-]*$/`,
               lineNum,
             );
           }
