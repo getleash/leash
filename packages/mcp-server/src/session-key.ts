@@ -6,10 +6,10 @@ import type { PrivateKeyAccount } from 'viem/accounts';
 
 // ─── Session-key store ──────────────────────────────────────────────
 //
-// Phase 6b ships one impl: FileSessionKeyStore, backed by a plain JSON
+// Ships one impl: FileSessionKeyStore, backed by a plain JSON
 // file at `.leash/agent/<name>/session-key.json`. macOS Keychain
 // integration — which install.md + architecture.md both promise —
-// lands with the CLI in Phase 7, behind the same SessionKeyStore
+// lands with the CLI, behind the same SessionKeyStore
 // interface so consumer code doesn't change.
 //
 // Deliberate simplifications for MVP:
@@ -67,9 +67,9 @@ interface HubOwnerFileShape {
  * `.leash/agent/<name>/session-key.json` and the hub-owner JSON at
  * `.leash/hub-owner.json`.
  *
- * Not intended to ship to end users in MVP — the CLI's Phase-7
+ * Not intended to ship to end users in MVP — the CLI's
  * `leash apply` will swap this out for the Keychain-backed store.
- * Tests use this directly; Phase 6d's dev-mainnet run will too.
+ * Tests use this directly; dev-mainnet runs too.
  */
 export class FileSessionKeyStore implements SessionKeyStore {
   constructor(private readonly opts: FileStoreOptions) {}
@@ -111,7 +111,7 @@ export class FileSessionKeyStore implements SessionKeyStore {
     if (!existsSync(path)) {
       throw new SessionKeyStoreError(
         `${role} key file missing at ${path}. ` +
-          `The CLI will seed this in Phase 7; for dev, write ` +
+          `The CLI will seed this; for dev, write ` +
           `{"privateKey":"0x...","address":"0x..."} manually.`,
       );
     }

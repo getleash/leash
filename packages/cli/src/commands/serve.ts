@@ -5,7 +5,7 @@ import { pickSessionKeyStore } from '../stores/index.js';
 // ─── leash serve <agent> ─────────────────────────────────────────────
 //
 // What Claude Code spawns via .mcp.json. Stdio-only — the HTTP debug
-// transport lives behind `--http` and is not wired in Phase 7a.
+// transport lives behind `--http` and is not wired in this build.
 //
 // Contract with .mcp.json: the subprocess stays alive until Claude
 // Code hangs up stdin; the process emits MCP JSON-RPC on stdout. Any
@@ -22,7 +22,7 @@ export async function serve(args: string[]): Promise<number> {
         'Usage: leash serve <agent>',
         '',
         'Tip: Claude Code launches this from .mcp.json — you rarely run it by hand.',
-        '     Run `leash status` (once that lands in Phase 7b) to see registered agents.',
+        '     Run `leash status` to see registered agents.',
       ].join('\n') + '\n',
     );
     return 2;
@@ -37,8 +37,8 @@ export async function serve(args: string[]): Promise<number> {
       agentName,
       cwd,
       noUpstreams: shouldSkipUpstreams(),
-      // Phase 7b: honour the platform-aware store picker so macOS
-      // users actually get Keychain-backed keys. Non-darwin (and
+      // Honour the platform-aware store picker so macOS users
+      // actually get Keychain-backed keys. Non-darwin (and
       // LEASH_KEY_STORE=file) falls back to FileSessionKeyStore.
       sessionKeys: pickSessionKeyStore({ leashRoot }),
     });

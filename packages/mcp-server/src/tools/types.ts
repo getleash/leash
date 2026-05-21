@@ -6,9 +6,8 @@ import type { UpstreamSession } from '../proxy/upstream-session.js';
 
 // ─── Tool handler context ────────────────────────────────────────────
 //
-// Every tool gets the same context. Phase 6c added `upstreams` —
-// the set of live MCP sessions the proxy layer uses to forward
-// republished tool calls.
+// Every tool gets the same context. `upstreams` is the set of live
+// MCP sessions the proxy layer uses to forward republished tool calls.
 
 export interface ToolContext {
   runtime: AgentRuntime;

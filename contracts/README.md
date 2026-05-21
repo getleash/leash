@@ -16,7 +16,7 @@ Solidity for the Leash hub / sub-account / session-key stack. Targets Base mainn
 - `SessionKeyValidator.t.sol` — 10 tests: UserOp happy + 5 negatives (revoked, expired, bad target, bad selector, value > cap, wrong signer), 1271 happy via Kernel routing, 1271 revoked, 1271 expired.
 - `LeashIntegration.t.sol` — 2 tests: full `EntryPoint.handleOps` round for a session-key-signed USDC transfer UserOp, and revoke via `Kernel.uninstallValidation` → next UserOp fails at validation.
 
-## Gas budgets (Phase 3 acceptance)
+## Gas budgets
 
 | Operation | Budget | Observed | Status |
 | --- | --- | --- | --- |
@@ -36,4 +36,4 @@ Forge profile: `solc 0.8.26`, `evm_version=cancun`, `via_ir=true`, optimizer 200
 
 ## Deployment
 
-No mainnet deploy script yet — deferred to Phase 8's live demo. Base addresses will be recorded in `packages/core/src/constants.ts` when deployment happens.
+Mainnet deploy script: `script/DeployLeash.s.sol`. Deployed addresses are recorded in `packages/core/src/constants.ts`.

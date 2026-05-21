@@ -65,8 +65,8 @@ const ZERO_ADDRESS: Address = '0x0000000000000000000000000000000000000000';
 // No paymaster involvement anywhere in apply — the factory deploys
 // are regular txs paid by the hub owner, and the validator install
 // runs as a direct Kernel call (root-hook path), not a UserOp.
-// Phase 8 deploys the VerifyingPaymaster + flips transfer/fund/drain
-// to sponsored gas; apply itself stays gas-from-owner indefinitely.
+// The VerifyingPaymaster deploy flips transfer/fund/drain to
+// sponsored gas; apply itself stays gas-from-owner indefinitely.
 
 const KERNEL_EXECUTE_SELECTOR = toFunctionSelector('execute(bytes32,bytes)');
 const MODULE_TYPE_VALIDATOR = 1n;

@@ -27,16 +27,14 @@ type UntypedRegister = any;
 
 // ─── Tool registration ───────────────────────────────────────────────
 //
-// Phase 6a: all five own tools are registered. Read-only tools
+// All five own tools are registered. Read-only tools
 // (get_balance, get_api_budget) work against the live chain /
 // grant. Write tools (pay_for_api, transfer, revoke_session_key)
-// return a structured "not yet implemented" error so Claude can
-// surface it cleanly; real implementations land in 6b/6c.
+// ship with their real implementations.
 //
-// Rationale for registering the stubs now rather than waiting:
-// CLAUDE.md promises these tools exist; the MCP surface should
-// match the documentation from day one so users (and the agent
-// itself) see a consistent list.
+// CLAUDE.md promises these tools exist; the MCP surface matches
+// the documentation so users (and the agent itself) see a consistent
+// list.
 
 export function registerLeashTools(server: McpServer, ctx: ToolContext): void {
   const s: UntypedRegister = server;

@@ -10,7 +10,7 @@ import { RestHttpClient } from './rest-client.js';
 // either runs the MCP handshake (for `transport: 'mcp'` adapters like
 // CMC) or synthesizes the tool list from the adapter's declared
 // `tools[]` array (for `transport: 'http-rest'` adapters — the majority
-// of the Phase D catalog). Either way, each tool is then republished
+// of the launch catalog). Either way, each tool is then republished
 // with a `<namespace>__<tool>` prefix on the Leash MCP surface. The
 // 402 retry loop in `paid-caller.ts` is transport-agnostic — both
 // client types share the `UpstreamClient` interface.

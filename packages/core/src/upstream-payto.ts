@@ -8,8 +8,8 @@ import type { ChainName } from './types.js';
 // cap at `leash apply` time we need each upstream's settlement address
 // (the `payTo` in their x402 challenge) before the very first call.
 //
-// MVP ships these statically. Phase D adds `leash apply --probe` which
-// hits each upstream's 402 endpoint and verifies the live `payTo` matches
+// MVP ships these statically. A future `leash apply --probe` would
+// hit each upstream's 402 endpoint and verify the live `payTo` matches
 // this table — a mismatch means either the upstream rotated their
 // settlement address (rare) or something is impersonating it (concerning).
 //
@@ -17,14 +17,14 @@ import type { ChainName } from './types.js';
 //   1. Verify the new address via the upstream's documentation + a fresh
 //      `curl` against their MCP endpoint.
 //   2. Update the entry here.
-//   3. Note the rotation in `summary/upstreams-catalog.md` (Phase D).
+//   3. Note the rotation in `summary/upstreams-catalog.md`.
 //   4. Bump the package version and document in the changelog so existing
 //      `leash apply` runs surface the change.
 
 export interface UpstreamPayTo {
   /** Production Base mainnet address. */
   base: Address;
-  /** Optional Base Sepolia testnet address (for Phase 5.x test deploys). */
+  /** Optional Base Sepolia testnet address (for test deploys). */
   baseSepolia?: Address;
 }
 

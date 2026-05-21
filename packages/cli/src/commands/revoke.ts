@@ -15,7 +15,7 @@ import {
 // a running MCP server.
 //
 // Hub owner needs ETH on Base to pay gas (~200k). `leash status`
-// surfaces the hub's ETH balance once that lands; Phase 7c's `apply`
+// surfaces the hub's ETH balance once that lands; `leash apply`
 // seeds the float.
 
 export async function revoke(args: string[]): Promise<number> {

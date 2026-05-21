@@ -42,7 +42,7 @@ interface IUSDCv2 {
 ///     (the v2 design from `summary/eip3009-policy-enforcement.md`).
 ///
 /// Sub-account is deployed via LeashFactory (registry + CREATE2 determinism)
-/// so the test exercises the same install path the Phase 7 CLI uses.
+/// so the test exercises the same install path the CLI uses.
 contract SessionKeyValidatorTest is Test {
     IEntryPoint constant ENTRYPOINT_V07 = IEntryPoint(0x0000000071727De22E5E9d8BAf0edAc6f37da032);
     IUSDCv2 constant USDC = IUSDCv2(0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913);

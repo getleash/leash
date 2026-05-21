@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { COMMANDS, findCommand, renderHelp } from '../src/dispatcher.js';
 
 describe('COMMANDS table', () => {
-  it('includes every Phase-7 command', () => {
+  it('includes every command', () => {
     const names = COMMANDS.map((c) => c.name).sort();
     expect(names).toEqual(
       [
@@ -20,7 +20,7 @@ describe('COMMANDS table', () => {
     );
   });
 
-  it('all Phase-7 commands are available (Phase 7d closes the surface)', () => {
+  it('all commands are available', () => {
     const ready = COMMANDS.filter((c) => c.available).map((c) => c.name).sort();
     expect(ready).toEqual([
       'apply',
@@ -58,7 +58,7 @@ describe('findCommand', () => {
 describe('renderHelp', () => {
   const help = renderHelp();
 
-  it('lists every Phase-7 command without the (soon) marker', () => {
+  it('lists every command without the (soon) marker', () => {
     expect(help).toMatch(/^\s*serve\s/m);
     expect(help).toMatch(/^\s*status\s/m);
     expect(help).toMatch(/^\s*fund\s/m);

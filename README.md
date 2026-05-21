@@ -14,7 +14,7 @@ John is building an AI agent called Cryptonit that correlates market data with w
 
 ---
 
-## Quickstart (once Phase 7 lands)
+## Quickstart
 
 ```bash
 npm install -g @getleash/cli
@@ -84,7 +84,7 @@ scripts/
   sync-abis.ts        # regenerate packages/core/src/abis/ from contracts/out/
   sync-deployments.ts # sync deployed addresses into constants.ts after a redeploy
   generate-keys.ts    # helper for generating session keys
-  demo-skeleton.ts    # Phase-1 walking-skeleton fixtures driver
+  demo-skeleton.ts    # walking-skeleton fixtures driver
 tests/
   fixtures/           # captured 402 challenges from each upstream's probe
 ```

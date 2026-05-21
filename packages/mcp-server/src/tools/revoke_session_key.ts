@@ -12,10 +12,10 @@ import { buildMcpError } from '../errors.js';
 // authorized without going through a UserOp / paymaster path.
 //
 // Trade-off for MVP: the hub owner needs ETH on Base to pay gas for
-// the revoke tx (~200k gas). `leash status` (Phase 7) surfaces this
+// the revoke tx (~200k gas). `leash status` surfaces this
 // explicitly; `leash apply` seeds the hub with a small ETH float at
 // apply time. Wrapping revoke in a UserOp + VerifyingPaymaster is a
-// Phase-6c/6d refinement.
+// future refinement.
 //
 // After the tx lands, SessionKeyValidator.isInitialized(subAccount)
 // returns false. Any subsequent UserOp signed by the session key

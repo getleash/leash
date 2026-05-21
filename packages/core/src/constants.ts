@@ -10,12 +10,12 @@ import type { ChainName } from './types.js';
 //     - entryPoint  — ERC-4337 v0.7 EntryPoint, deployed by eth-infinitism.
 //     - usdc        — Circle's USDC contract on this chain.
 //
-//   Phase-8-managed (filled by `scripts/sync-deployments.ts` after a
-//   `forge script DeployLeash.s.sol` run):
+//   Filled by `scripts/sync-deployments.ts` after a
+//   `forge script DeployLeash.s.sol` run:
 //     - kernelImpl, kernelFactory, ecdsaValidator   — vendored ZeroDev Kernel v3.3 stack.
 //     - leashFactory, sessionKeyValidator, verifyingPaymaster — Leash's own contracts.
 //
-// Phase-8 fields stay at ZERO until the sync runs — anything that
+// Deploy fields stay at ZERO until the sync runs — anything that
 // reaches for them pre-deploy blows up loudly (e.g. `leash apply`'s
 // early-exit guard) instead of silently writing junk on-chain.
 //
@@ -39,7 +39,7 @@ export interface ChainConfig {
   /** ZeroDev ECDSAValidator (root validator for hub + sub). */
   ecdsaValidator: Address;
 
-  // ─── Leash contracts (deployed in Phase 8) ────────────────────────
+  // ─── Leash contracts ──────────────────────────────────────────────
   /** LeashFactory (our thin wrapper on KernelFactory). */
   leashFactory: Address;
   /** Our SessionKeyValidator (installed as secondary on each sub). */

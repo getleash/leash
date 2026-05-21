@@ -4,9 +4,8 @@
 // lives in its own file under src/commands/ and is lazy-loaded so
 // `leash --help` doesn't pay to import serve+SQLite+viem.
 //
-// Phase 7a registers `serve`. Phase 7b adds status/logs/fund/drain/revoke.
-// Phase 7c replaces the `apply` stub with the real deploy flow.
-// Phase 7d adds doctor + export-backup / import-backup.
+// Registers the full CLI surface: serve, status, logs, fund, drain,
+// revoke, apply, doctor, export-backup, import-backup.
 
 export interface Command {
   name: string;
@@ -14,7 +13,7 @@ export interface Command {
   synopsis: string;
   /** Usage line. */
   usage: string;
-  /** Whether the command is shipped in the current phase. */
+  /** Whether the command is shipped in this build. */
   available: boolean;
   /** Lazy loader. */
   load: () => Promise<(args: string[]) => Promise<number>>;

@@ -4,7 +4,7 @@ All notable changes to Leash (the monorepo: `@getleash/core`, `@getleash/bundler
 
 ## Unreleased
 
-### Phase C — on-chain EIP-3009 policy enforcement (witness-bearing signatures)
+### On-chain EIP-3009 policy enforcement (witness-bearing signatures)
 
 The SessionKeyValidator now enforces per-recipient amount caps and recipient allowlist on-chain for x402 / EIP-3009 payments, closing the asymmetry that previously left those checks off-chain in the MCP. The signature carries the EIP-3009 fields as witness bytes after the ECDSA portion; the validator rebuilds the USDC + Kernel-wrapped digest from the witness, requires equality against the supplied 1271 hash, then enforces `maxValueByRecipient[kernel][recipient]`. Apples-to-apples gas delta vs the previous hash-opaque path: +7.7k gas at the 1271-integration level, within the +8k acceptance ceiling.
 
@@ -16,10 +16,10 @@ The SessionKeyValidator now enforces per-recipient amount caps and recipient all
   - **Base Sepolia:** `0xaB242Ae355Ab350c93d7cBB94Dd77a62c1AA35aF` (tx `0x6f7477b5973226cf71fa780e4d22f806bc79b6f8625942a5f294ce6b6d8d5007`)
 
 **TypeScript:**
-- `@getleash/core`: added `encodeEip3009Witness`, `buildWitnessOuter1271Signature`, `prefixSecondaryValidatorSignature`. New static registry `UPSTREAM_PAYTO` + `resolveUpstreamPayTo` for upstream settlement addresses (Phase D will add probe-and-verify on top).
+- `@getleash/core`: added `encodeEip3009Witness`, `buildWitnessOuter1271Signature`, `prefixSecondaryValidatorSignature`. New static registry `UPSTREAM_PAYTO` + `resolveUpstreamPayTo` for upstream settlement addresses (a probe-and-verify mode is a future enhancement).
 - `@getleash/core/policy-parser`: accepts optional `max_per_call: <amt> USDC` per upstream, with cross-validation against `max_per_transaction`.
 - `@getleash/cli`: `apply` now installs per-recipient caps. `buildInstallInitData` extended to 7-tuple.
-- `@getleash/mcp-server`: x402 signing path emits the witness-bearing outer signature with the secondary-validator routing prefix (`0x01 || validator(20) || ECDSA(65) || witness(160)`). Fixed a latent bug — pre-Phase-C the code prepended `0x00` (root-validator selector), which would not have validated against the non-root SessionKeyValidator in production.
+- `@getleash/mcp-server`: x402 signing path emits the witness-bearing outer signature with the secondary-validator routing prefix (`0x01 || validator(20) || ECDSA(65) || witness(160)`). Fixed a latent bug — before this change the code prepended `0x00` (root-validator selector), which would not have validated against the non-root SessionKeyValidator in production.
 
 **Gas:** apples-to-apples 1271 integration delta is +7,747 gas (109,772 → 117,519), inside the spike's +8k acceptance ceiling. UserOp path unchanged at 160k.
 
@@ -27,17 +27,17 @@ The SessionKeyValidator now enforces per-recipient amount caps and recipient all
 
 **Breaking:** the on-chain validator's install data shape changed; any sub-account previously deployed against v1 cannot be reused with the v2 install path. No live user sub-accounts existed at the time of the change.
 
-### Phase D — Upstream rollout (12 curated x402 adapters)
+### Upstream rollout (12 curated x402 adapters)
 
 Catalog scope: 20 → 10 → 12 over three rebaseline rounds. All 12 picks live-verified with raw curl (no SDK gatekeepers, no account signups).
 
-**REST adapter framework (D.3):**
+**REST adapter framework:**
 - `UpstreamAdapter` is now a discriminated union: `transport: 'mcp' | 'http-rest'`. CMC stays MCP-native; the other 11 are REST.
 - New `RestHttpClient` (`packages/mcp-server/src/proxy/rest-client.ts`) implements the shared `UpstreamClient` interface alongside `McpHttpClient`. The 402 retry loop in `PaidToolCaller` is transport-agnostic.
 - REST adapters declare a tool list (`name, description, inputSchema, method, path, headers?, bodyMode?`). Leash synthesizes MCP `tools/list` entries and translates each `tools/call` into one HTTP request with path-param substitution + JSON-body / query-string encoding.
 - 7 new unit tests cover the REST path. The pre-existing CMC test suite stays green as a regression check.
 
-**11 new adapters (D.4):**
+**11 new adapters:**
 - **browserbase** — Headless browser sessions ($0.01/5min, v1, body)
 - **exa** — AI web search ($0.001–$0.007, v2, header)
 - **neynar** — Farcaster social ($0.01, v2, body)
@@ -52,9 +52,9 @@ Catalog scope: 20 → 10 → 12 over three rebaseline rounds. All 12 picks live-
 
 Categories covered: crypto data · browser · social · news · search · DNS intel · AI safety · doc tools · onchain lookup · risk screening · forex/macro · blockchain forensics (12 distinct).
 
-Protocol coverage: 10 v2 + 2 v1 (Browserbase, Robtex, MRU Oracle). v1 hadn't been exercised in production code before Phase D; the existing 402 retry path handles both natively.
+Protocol coverage: 10 v2 + 2 v1 (Browserbase, Robtex, MRU Oracle). v1 hadn't been exercised in production code before this rollout; the existing 402 retry path handles both natively.
 
-### Phase D — Live mainnet smoke (D.5 + D.8)
+### Live mainnet smoke
 
 Two rounds of end-to-end smoke against Base mainnet on 2026-05-12 settled real USDC payments through the witness-bearing signature path. Final catalog: **10 live-verified upstreams**.
 
@@ -85,9 +85,9 @@ Adapter files for all 9 dropped candidates kept under `packages/mcp-server/src/u
 - **The 0000402.xyz pattern:** probe-cleanness ≠ settle-cleanness. An upstream can return a perfectly valid 402 challenge while having no working facilitator configured. Live mainnet smoke is the only binding evidence.
 - **CDP and self-hosted modern facilitators handle witness sigs uniformly.** The witness-bearing signature `0x01 || sessionKeyValidator(20) || ECDSA(65) || abi.encode(witness)` is accepted by every facilitator that implements the smart-wallet sig path in the `coinbase/x402` reference impl.
 
-**Total mainnet spend (D.5 + D.8):** ~$0.84 USDC (recovered ~$0.45 via drain). Hub recovered to 0.97 USDC.
+**Total mainnet spend during the smoke rounds:** ~$0.84 USDC (recovered ~$0.45 via drain). Hub recovered to 0.97 USDC.
 
-### Phase B.1 — refactor + dedup pass
+### Refactor + dedup pass
 
 - Removed `temp/agent-wallet-architecture-update.md` (pre-pivot design artifact, not referenced).
 - Removed `scripts/stubs/` (empty placeholder).

@@ -63,14 +63,14 @@ describe('sessionKeyExpired', () => {
 });
 
 describe('notYetImplemented', () => {
-  it('returns a CONFIG_MISSING structured error that names the phase', () => {
-    const e = notYetImplemented('transfer', 'Phase 6b');
+  it('returns a CONFIG_MISSING structured error that names the landing milestone', () => {
+    const e = notYetImplemented('transfer', 'v1.1');
     expect(e.structuredContent.code).toBe('CONFIG_MISSING');
     expect(e.structuredContent.details).toEqual({
       tool: 'transfer',
-      phase: 'Phase 6b',
+      landing: 'v1.1',
     });
-    expect(e.content[0].text).toContain('Phase 6b');
+    expect(e.content[0].text).toContain('v1.1');
     expect(e.content[0].text).toContain('transfer');
   });
 });

@@ -3,10 +3,10 @@ import type { MCPError, MCPErrorCategory, MCPErrorCode } from '@getleash/core';
 // ─── MCP error envelope ──────────────────────────────────────────────
 //
 // Every tool-visible failure goes through this builder. Canonical
-// strings live in summary/errors.md §1; the Phase-1 walking-skeleton
-// goldens pin them. The parameters intentionally match the six fields
-// of the structured envelope so a mismatch shows up as a TS error,
-// not a runtime surprise.
+// strings live in summary/errors.md §1; the walking-skeleton goldens
+// pin them. The parameters intentionally match the six fields of the
+// structured envelope so a mismatch shows up as a TS error, not a
+// runtime surprise.
 
 export interface BuildMcpErrorParams {
   code: MCPErrorCode;
@@ -38,11 +38,10 @@ export function buildMcpError(p: BuildMcpErrorParams): MCPError {
   };
 }
 
-// ─── Common ready-made errors (Phase 6a subset) ──────────────────────
+// ─── Common ready-made errors ────────────────────────────────────────
 //
-// Expand in Phase 6b/6c as budget, funds, upstream, and auth paths go
-// live. Keeping the factories typed at the call site stops the text
-// drifting away from summary/errors.md.
+// Keeping the factories typed at the call site stops the text drifting
+// away from summary/errors.md.
 
 export function configMissing(agentName: string): MCPError {
   return buildMcpError({
@@ -69,19 +68,18 @@ export function sessionKeyExpired(agentName: string, expiredAt: string): MCPErro
   });
 }
 
-// Phase-6a-only sentinel — used by write tools whose real implementation
-// lands in Phase 6b (transfer, revoke_session_key) and Phase 6c
-// (pay_for_api). Marking them `config` keeps Claude from retrying
-// (per summary/errors.md §"Category → Claude's behavior").
-export function notYetImplemented(tool: string, phase: string): MCPError {
+// Sentinel for tools that are wired but not yet implemented. Marking
+// them `config` keeps Claude from retrying (per summary/errors.md
+// §"Category → Claude's behavior").
+export function notYetImplemented(tool: string, landing: string): MCPError {
   return buildMcpError({
     code: 'CONFIG_MISSING',
     category: 'config',
     text:
       `Leash: tool '${tool}' is wired but not yet implemented on this ` +
-      `build. Landing in ${phase}. Read-only tools (get_balance, ` +
+      `build. Landing in ${landing}. Read-only tools (get_balance, ` +
       `get_api_budget) work; write tools do not.`,
-    details: { tool, phase },
-    suggested_action: `upgrade Leash once ${phase} ships`,
+    details: { tool, landing },
+    suggested_action: `upgrade Leash once ${landing} ships`,
   });
 }

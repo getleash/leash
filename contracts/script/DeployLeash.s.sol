@@ -15,7 +15,7 @@ import {LeashFactory} from "../src/LeashFactory.sol";
 import {SessionKeyValidator} from "../src/SessionKeyValidator.sol";
 import {VerifyingPaymaster} from "../src/VerifyingPaymaster.sol";
 
-/// @notice Phase 8 — one-shot full-stack deploy.
+/// @notice One-shot full-stack deploy.
 ///
 /// ┌─ What this script is (and isn't) for ──────────────────────────┐
 /// │                                                                │

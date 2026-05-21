@@ -16,7 +16,7 @@ async function main(): Promise<number> {
   }
 
   if (command === '-v' || command === '--version') {
-    process.stdout.write('leash 0.1.0 (Phase 7a)\n');
+    process.stdout.write('leash 0.1.0\n');
     return 0;
   }
 

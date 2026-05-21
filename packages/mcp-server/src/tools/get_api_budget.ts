@@ -4,8 +4,8 @@ import type { ToolContext } from './types.js';
 // ─── get_api_budget ──────────────────────────────────────────────────
 //
 // Returns the four spend caps + session-key expiry + live counters
-// from the SQLite payment log. Phase 6b flipped `accounting` from
-// 'stub-6a' to 'live' — the numbers are now authoritative.
+// from the SQLite payment log. `accounting` is 'live' — the numbers
+// are authoritative.
 
 export interface GetApiBudgetOutput {
   session_key_expires_at: number;
@@ -26,7 +26,7 @@ export interface GetApiBudgetOutput {
     week_usdc: string;
     month_usdc: string;
   };
-  /** Reliability flag — 'live' since Phase 6b. */
+  /** Reliability flag — always 'live'. */
   accounting: 'live';
 }
 

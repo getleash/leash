@@ -1,4 +1,4 @@
-// @getleash/core — shared TS primitives (Phase 4).
+// @getleash/core — shared TS primitives.
 //
 // Stable surface used by the bundler, MCP server, and CLI.
 // Policy / AuthorizationGrant / x402 types and the Kernel-wrapped

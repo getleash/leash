@@ -1,9 +1,9 @@
-// CLI command stubs for Phase 1's walking skeleton. Each function
+// CLI command stubs for the walking skeleton. Each function
 // takes a Context and writes into ctx.writer so the orchestrator can
 // capture stdout and diff against tests/fixtures/user-flows/*.txt.
 //
 // No argparser here — the orchestrator calls these functions directly
-// with parsed arguments. Phase 7 replaces this with a real CLI binary.
+// with parsed arguments. The real CLI binary replaces this.
 
 import { isAbsolute, join } from "node:path";
 import type { Context } from "./context.js";

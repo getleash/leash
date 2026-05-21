@@ -17,11 +17,11 @@ import {
 //   ├── config.json            — hub-level (ownerAddress, hubAddress, chain)
 //   └── agent/<name>/
 //       ├── agent.json         — sub-account address, session-key pubkey, policy path
-//       ├── grant.json         — SignedAuthorizationGrant (Phase 5.5 object)
+//       ├── grant.json         — SignedAuthorizationGrant
 //       └── session-key.enc    — encrypted session-key private key (Keychain unseal)
 //
-// Phase 6a reads the first three. Session-key decryption lives in
-// Phase 6b when write tools come online.
+// Reads the first three. Session-key decryption is used by the
+// write tools.
 
 export interface LeashHubConfig {
   owner: Address;

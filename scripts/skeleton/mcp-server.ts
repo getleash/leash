@@ -1,6 +1,6 @@
 // Walking-skeleton MCP server. Registers Leash's five own tools + one
 // republished CMC tool. The 402 settlement flow is simulated inline —
-// there is no separate upstream process in Phase 1. Production (Phase 6)
+// there is no separate upstream process in this skeleton. Production
 // swaps this for a real HTTP client with adapter-driven 402 handling.
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -232,9 +232,9 @@ export async function buildLeashMcp(ctx: Context): Promise<McpConn> {
     },
   );
 
-  // Note: transfer and pay_for_api tools are out of scope for Phase 1's
-  // §1 + §5 fixtures. They'll register in Phase 6 alongside the real
-  // on-chain allowlist plumbing.
+  // Note: transfer and pay_for_api tools are out of scope for the
+  // §1 + §5 fixtures. They register alongside the real on-chain
+  // allowlist plumbing.
 
   const [cTransport, sTransport] = InMemoryTransport.createLinkedPair();
   await server.connect(sTransport);

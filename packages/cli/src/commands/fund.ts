@@ -17,9 +17,9 @@ import {
 // the hub owner EOA to `Kernel(hub).execute(USDC.transfer(sub, amount))`.
 // Authorized via Kernel's `onlyEntryPointOrSelfOrRoot` modifier, which
 // delegates to `ECDSAValidator.preCheck` — matching the same path
-// Phase 7c's `apply` uses for `installModule` / `execute`.
+// `leash apply` uses for `installModule` / `execute`.
 //
-// Pre-Phase-7c this was a UserOp path that required a paymaster or
+// Earlier this was a UserOp path that required a paymaster or
 // EntryPoint deposit. Direct calls sidestep that entirely — hub
 // owner pays gas with ETH (which it already needs for deploys). No
 // change for the agent-facing `transfer` tool, which still needs

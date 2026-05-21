@@ -6,7 +6,7 @@ import type { ToolContext } from './types.js';
 //
 // Read-only. Returns the USDC balance of a given account (default:
 // the sub-account). Agent uses this to budget before asking to pay,
-// and John uses it via `leash status` once that CLI phase lands.
+// and John uses it via `leash status`.
 
 export interface GetBalanceInput {
   /** Optional override — any address. Defaults to the sub-account. */

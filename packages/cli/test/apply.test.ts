@@ -66,13 +66,13 @@ describe('leash apply — input + early exits', () => {
 
   // The "LeashFactory not yet deployed on <chain>" early-exit guard
   // (apply.ts ~line 114) used to be exercised here against both
-  // BASE_MAINNET and BASE_SEPOLIA. Once Phase 8 contracts land in
+  // BASE_MAINNET and BASE_SEPOLIA. Once contracts land in
   // constants.ts for either chain, that path becomes unreachable
   // through the real chain config — the guard still runs in
   // production against half-edited constants.ts, but there's no
   // chain identifier left in unit-test-land where it stays ZERO.
   // Coherence of constants.ts is enforced by
-  // assertPhase8Coherent() in core/constants.test.ts (rejects
+  // assertDeployFieldsCoherent() in core/constants.test.ts (rejects
   // partial deploys); the runtime guard in apply.ts is trivial
   // enough that mocking the chain config to keep this test alive
   // is more cost than it pays back.

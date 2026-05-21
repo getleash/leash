@@ -68,7 +68,7 @@ Read every `.sol` file in `contracts/src/` (`LeashFactory.sol`, `SessionKeyValid
 - Are `uint48` timestamps handled without truncation (no implicit narrowing from `block.timestamp`)?
 
 ### Witness rebuild path (SessionKeyValidator)
-This is the highest-risk surface — added in Phase C 2026-05-12. Re-verify carefully:
+This is the highest-risk surface — added 2026-05-12 when on-chain EIP-3009 enforcement landed. Re-verify carefully:
 - Are the witness fields (`to`, `value`, `validAfter`, `validBefore`, `nonce`) extracted from the signature blob in the same order and with the same encoding as the off-chain signer uses?
 - Is the rebuilt `EIP-3009 TransferWithAuthorization` digest constructed against the correct USDC domain (`name="USD Coin"`, `version="2"`, `chainId`, `verifyingContract` = USDC address)?
 - Is the rebuilt digest compared with `==` against the wrapped 1271 hash, with a clear revert on mismatch?

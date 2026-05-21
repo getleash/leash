@@ -33,11 +33,11 @@ import { policyDenialToMcpError } from '../proxy/policy-errors.js';
 //   6. On confirm: update to status='confirmed' + tx hash + gas.
 //      On revert: update to status='failed' (budget refunded).
 //
-// Phase 6b explicitly does NOT attach VerifyingPaymaster sponsorship —
-// the sub-account pays its own gas via its EntryPoint deposit. Phase 6c
-// wires paymasterAndData when we settle on the sponsorship flow.
-// Pre-6c, the sub-account MUST have an EntryPoint deposit — document
-// in the error if a deposit-exhausted revert surfaces.
+// This path explicitly does NOT attach VerifyingPaymaster sponsorship —
+// the sub-account pays its own gas via its EntryPoint deposit.
+// A future change wires paymasterAndData when we settle on the
+// sponsorship flow. Today, the sub-account MUST have an EntryPoint
+// deposit — document in the error if a deposit-exhausted revert surfaces.
 
 export interface TransferInput {
   to: Address;
@@ -115,7 +115,7 @@ export async function handleTransfer(
   });
 
   // ── Paymaster sponsorship ────────────────────────────────────────
-  // Phase 8: once the canonical VerifyingPaymaster is deployed (address
+  // Once the canonical VerifyingPaymaster is deployed (address
   // non-zero in ChainConfig), attach sponsorship signed by the hub
   // owner (who serves as the paymaster's verifying signer per
   // summary/paymaster-scope.md). Pre-deploy, chainConfig.verifyingPaymaster

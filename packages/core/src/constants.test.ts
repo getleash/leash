@@ -12,7 +12,7 @@ import {
   type ChainConfig,
 } from './constants.js';
 
-// ─── Phase-8-state coherence check ───────────────────────────────────
+// ─── Deploy-field coherence check ────────────────────────────────────
 //
 // The six contract-address fields managed by sync-deployments must
 // be in one of two states: all six are ZERO (pre-deploy) or all six
@@ -21,7 +21,7 @@ import {
 
 const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
 
-function assertPhase8Coherent(cfg: ChainConfig, label: string): void {
+function assertDeployFieldsCoherent(cfg: ChainConfig, label: string): void {
   const fields: ReadonlyArray<readonly [string, string]> = [
     ['kernelImpl', cfg.kernelImpl],
     ['kernelFactory', cfg.kernelFactory],
@@ -34,7 +34,7 @@ function assertPhase8Coherent(cfg: ChainConfig, label: string): void {
   const allNonZero = fields.every(([, v]) => v !== ZERO_ADDR);
   expect(
     allZero || allNonZero,
-    `${label}: partial deploy — some Phase-8 fields are zero, others aren't:\n` +
+    `${label}: partial deploy — some deploy fields are zero, others aren't:\n` +
       fields.map(([k, v]) => `  ${k}: ${v}`).join('\n'),
   ).toBe(true);
   if (allNonZero) {
@@ -43,7 +43,7 @@ function assertPhase8Coherent(cfg: ChainConfig, label: string): void {
     }
     expect(
       new Set(fields.map(([, v]) => v.toLowerCase())).size,
-      `${label}: duplicate addresses across Phase-8 fields`,
+      `${label}: duplicate addresses across deploy fields`,
     ).toBe(fields.length);
   }
 }
@@ -114,8 +114,8 @@ describe('Base mainnet constants', () => {
     expect(BASE_MAINNET.usdcDomainVersion).toBe('2');
     expect(BASE_MAINNET.usdcDomainName).toBe('USD Coin');
   });
-  it('Phase-8 fields are either all-zero (pre-deploy) or all-set (post-deploy, distinct)', () => {
-    assertPhase8Coherent(BASE_MAINNET, 'BASE_MAINNET');
+  it('deploy fields are either all-zero (pre-deploy) or all-set (post-deploy, distinct)', () => {
+    assertDeployFieldsCoherent(BASE_MAINNET, 'BASE_MAINNET');
   });
 });
 
@@ -125,8 +125,8 @@ describe('Base sepolia constants', () => {
       '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     );
   });
-  it('Phase-8 fields are either all-zero (pre-deploy) or all-set (post-deploy, distinct)', () => {
-    assertPhase8Coherent(BASE_SEPOLIA, 'BASE_SEPOLIA');
+  it('deploy fields are either all-zero (pre-deploy) or all-set (post-deploy, distinct)', () => {
+    assertDeployFieldsCoherent(BASE_SEPOLIA, 'BASE_SEPOLIA');
   });
 });
 

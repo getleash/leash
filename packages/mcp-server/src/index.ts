@@ -1,11 +1,10 @@
-// @getleash/mcp-server — Phase 6c surface
+// @getleash/mcp-server — public surface
 //
-// The MCP server runtime the Cryptonit agent talks to via stdio. As
-// of Phase 6c, the full Phase-6 scope ships: SQLite-backed policy
-// counters, session-key unseal, real transfer / revoke_session_key
-// handlers, curated upstream adapters + x402 middleware,
-// pay_for_api (explicit signing), and republished upstream tools
-// under their namespace prefix.
+// The MCP server runtime the Cryptonit agent talks to via stdio.
+// Ships: SQLite-backed policy counters, session-key unseal, real
+// transfer / revoke_session_key handlers, curated upstream adapters
+// + x402 middleware, pay_for_api (explicit signing), and republished
+// upstream tools under their namespace prefix.
 
 export { createLeashMcpServer, serveStdio } from './server.js';
 export type {
@@ -50,12 +49,12 @@ export {
 } from './session-key.js';
 export type { SessionKeyStore, FileStoreOptions } from './session-key.js';
 
-// ─── Upstream adapters (Phase 6c) ────────────────────────────────────
+// ─── Upstream adapters ───────────────────────────────────────────────
 export { coinmarketcapAdapter } from './upstreams/coinmarketcap.js';
 export { getUpstreamAdapter, supportedUpstreamNames } from './upstreams/registry.js';
 export type { UpstreamAdapter } from './upstreams/types.js';
 
-// ─── Proxy layer (Phase 6c) ──────────────────────────────────────────
+// ─── Proxy layer ─────────────────────────────────────────────────────
 export {
   McpHttpClient,
   UpstreamMcpError,

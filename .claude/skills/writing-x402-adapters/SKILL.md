@@ -176,7 +176,7 @@ The point of the test is to **lock in the probe shape**. If the upstream silentl
 
 You don't run this — the maintainer does, with real USDC on Base mainnet. The smoke harness is in the maintainer's private workspace; it deploys a fresh sub-account, installs the SessionKeyValidator with the new recipient, seeds the sub-account, runs one tool call, settles real USDC, and verifies the upstream returns a tool result.
 
-**Probe-cleanness ≠ settle-cleanness.** During the Phase D catalog smoke, 9 of 19 probed-clean upstreams failed at settle time for documented reasons (legacy facilitators, rotating payTo, incomplete operator-side x402 wiring). Your adapter passes the gate only when the live smoke logs the upstream returning data, not just a 402.
+**Probe-cleanness ≠ settle-cleanness.** During the initial catalog smoke, 9 of 19 probed-clean upstreams failed at settle time for documented reasons (legacy facilitators, rotating payTo, incomplete operator-side x402 wiring). Your adapter passes the gate only when the live smoke logs the upstream returning data, not just a 402.
 
 ## Common gotchas
 

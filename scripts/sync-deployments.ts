@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-// Sync Phase-8 deployed addresses into @getleash/core/src/constants.ts.
+// Sync deployed addresses into @getleash/core/src/constants.ts.
 //
 // Usage (two modes):
 //

@@ -74,7 +74,7 @@ contract LeashIntegrationTest is Test {
         _installSessionKeyValidator();
 
         // Fund the sub-account's EntryPoint deposit so it can pay its own gas
-        // (no paymaster in this test — paymaster integration is Phase 6).
+        // (no paymaster in this test).
         vm.deal(subAccount, 1 ether);
         vm.prank(subAccount);
         ENTRYPOINT_V07.depositTo{value: 0.05 ether}(subAccount);
@@ -103,7 +103,7 @@ contract LeashIntegrationTest is Test {
             "transfer settled via UserOp"
         );
         emit log_named_uint("transfer UserOp gas (full handleOps round)", gasUsed);
-        // Phase 3 acceptance: transfer UserOp < 200k gas.
+        // Acceptance: transfer UserOp < 200k gas.
         // Observed: ~160k — meets the budget with headroom.
         assertLt(gasUsed, 200_000, "transfer UserOp must fit 200k budget");
     }

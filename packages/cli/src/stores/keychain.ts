@@ -74,8 +74,7 @@ export class KeychainSessionKeyStore implements SessionKeyStore {
   /**
    * Store a private key in the Keychain under the given account.
    * Overwrites an existing entry with the same (service, account)
-   * pair. Exposed for `leash apply` (Phase 7c) and
-   * `leash import-backup` (Phase 7d).
+   * pair. Exposed for `leash apply` and `leash import-backup`.
    */
   setAgentKey(agentName: string, privateKey: Hex): void {
     this.writeAccount(agentAccount(agentName), privateKey);

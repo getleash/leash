@@ -7,7 +7,7 @@
 // MVP is curated-only (PoC-B hit three real incompatibilities against
 // CMC alone; a "works-with-any-URL" claim costs more than it earns).
 //
-// Two transport modes (Phase D / 2026-05-12):
+// Two transport modes:
 //   - `mcp`:       upstream ships a real MCP server. The proxy opens
 //                  a session, calls `tools/list` at startup, and
 //                  republishes every tool. CoinMarketCap is the
@@ -16,7 +16,7 @@
 //                  a tool list (name, schema, method, path) which Leash
 //                  synthesizes as MCP `tools/list` entries; each
 //                  `tools/call` becomes one HTTP request. Most of the
-//                  Phase D 10-upstream catalog is REST.
+//                  10-upstream launch catalog is REST.
 
 import type { Address } from 'viem';
 

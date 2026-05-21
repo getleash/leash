@@ -2,7 +2,7 @@ import type { Address, Hex } from 'viem';
 
 // ─── Policy Types ────────────────────────────────────────────────────
 //
-// Shape matches examples/cryptonit/cryptonit-policy.md (Phase 0 frozen).
+// Shape matches examples/cryptonit/cryptonit-policy.md.
 // All amounts are USDC base units (6 decimals) bigint; convert at
 // presentation boundary only.
 
@@ -63,8 +63,7 @@ export interface AgentPolicy {
 // First-class representation of what the principal has authorized the
 // agent to do. The on-chain session-key whitelist is a projection of
 // this; the markdown policy is the human source of truth; the signed
-// x402 payments reference its `id`. Phase 4 defines the type; later
-// phases fill in the signing / revocation surface.
+// x402 payments reference its `id`.
 
 export interface AuthorizationGrant {
   /** Stable UUID (v7) minted by `leash apply`. Used for audit + revocation. */

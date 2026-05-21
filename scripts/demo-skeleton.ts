@@ -1,4 +1,4 @@
-// Phase 1 walking-skeleton demo. Runs every §1 + §5 transcript from
+// Walking-skeleton demo. Runs every §1 + §5 transcript from
 // summary/user-flows.md against stubs, captures output, and diffs
 // against tests/fixtures/user-flows/*.txt. Exits 0 on all-green;
 // non-zero with a readable diff on drift.

@@ -95,7 +95,7 @@ describe('get_balance', () => {
   });
 });
 
-describe('get_api_budget (live accounting, Phase 6b)', () => {
+describe('get_api_budget (live accounting)', () => {
   it("reports 'live' and reflects spend from the DB", async () => {
     const db = new PaymentLog(':memory:');
     // 0.45 USDC spent today.
@@ -203,7 +203,7 @@ describe('transfer — denial paths (no bundler needed)', () => {
   });
 });
 
-describe('pay_for_api (explicit signing, Phase 6c)', () => {
+describe('pay_for_api (explicit signing)', () => {
   it('rejects an unknown upstream', async () => {
     const db = new PaymentLog(':memory:');
     const res = await handlePayForApi(

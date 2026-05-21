@@ -11,8 +11,8 @@ import type { Address, Hex } from 'viem';
 // 64-bit fits USDC base units up to ~9.2e18, way past any realistic
 // cap). Timestamps are unix milliseconds.
 //
-// Phase 6b consumers: policy.ts (aggregate spend-so-far per window)
-// and get_api_budget (remaining = cap − spent).
+// Consumers: policy.ts (aggregate spend-so-far per window) and
+// get_api_budget (remaining = cap − spent).
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS payments (

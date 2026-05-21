@@ -26,7 +26,7 @@ import { openUpstreamSessions, type UpstreamSession } from './proxy/upstream-ses
 // in the caller — `serveStdio` is the production path; tests use
 // `createLeashMcpServer` + an in-process transport.
 //
-// Upstream initialization is ASYNC (Phase 6c). `createLeashMcpServer`
+// Upstream initialization is ASYNC. `createLeashMcpServer`
 // stays synchronous for backward-compat; callers that want upstreams
 // pass in pre-opened sessions, or use the higher-level
 // `createLeashMcpServerWithUpstreams` helper.

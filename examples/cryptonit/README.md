@@ -40,7 +40,7 @@ pick, no Bearer token to manage.
 
 ## Prompts to try (golden fixtures)
 
-These are the prompts the walking-skeleton demo (Phase 1) must handle.
+These are the prompts the walking-skeleton demo must handle.
 Every developer evaluating Leash should try these three in order:
 
 1. **Happy-path price lookup** — `"What's BTC's current price?"`
