@@ -1,139 +1,110 @@
 # Leash — contributor guide for Claude Code
 
-This is the implementation repo for **Leash** — an MCP proxy that lets AI agents pay for x402-enabled APIs using USDC on Base L2, with on-chain session keys and policy-enforced budgets. The goal of this file is to give Claude (and any human reading it) what they need to do useful work in this codebase without re-deriving project conventions every session.
+MCP proxy for AI agents paying x402-enabled APIs in USDC on Base L2, with on-chain session keys and policy-enforced budgets. See [`README.md`](README.md) for the user pitch, [`docs/`](docs/) for the user/agent/contributor reference, [`CONTRIBUTING.md`](CONTRIBUTING.md) for PR expectations. Comments in `packages/*/src/` are load-bearing — read them.
 
-Read [`README.md`](README.md) for the user-facing pitch and quickstart, [`CONTRIBUTING.md`](CONTRIBUTING.md) for what makes a good PR, and the prose comments in `packages/*/src/` — they're load-bearing.
-
-## Building and running
+## Build + test
 
 ```bash
-git submodule update --init --recursive   # required: contracts/lib/{kernel, account-abstraction, openzeppelin-contracts}
-npm install
-npm run build --workspaces
-npm test --workspaces
+git submodule update --init --recursive   # contracts/lib/{kernel, account-abstraction, openzeppelin-contracts}
+npm install && npm run build --workspaces
+npm test --workspaces                                   # 224 vitest cases
+cd contracts && forge test --fork-url $BASE_RPC_URL     # 66 forge cases, Base mainnet fork
 ```
 
-Contracts:
+`BASE_RPC_URL` defaults to `https://mainnet.base.org` (fine for tests; switch to Alchemy/QuickNode for steady-state). Copy `.env.example` → `.env` for `BASE_RPC_URL` and (when needed) `DEPLOYER_PRIVATE_KEY`. Both `.env` and any `*.db` are gitignored.
 
-```bash
-cd contracts
-forge test --fork-url $BASE_RPC_URL       # 66 tests on a Base mainnet fork
-```
+Live mainnet smoke (real USDC, real gas) lives outside this repo. Public contributors don't run it; CI doesn't run it. The maintainer runs it before promoting an upstream from "Deferred" to "Available" in `docs/upstreams.md`.
 
-Set `BASE_RPC_URL` to any Base RPC endpoint; the public one at `https://mainnet.base.org` is fine for tests. A `.env` is gitignored at the repo root — copy `.env.example` and fill in `BASE_RPC_URL` and (only when needed) `DEPLOYER_PRIVATE_KEY`.
+When extending: edit the existing test file for the surface you change; new `*.test.ts` only for a wholly new module. RPC-dependent tests use the forge fork or the `packages/mcp-server/src/proxy/*.test.ts` mocks — never live RPC.
 
-## Testing
-
-Two test surfaces, both must stay green before a PR is mergeable:
-
-- **TypeScript:** `npm test --workspaces` runs 224 vitest cases across `packages/{core, bundler, mcp-server, cli}`.
-- **Solidity:** `cd contracts && forge test --fork-url $BASE_RPC_URL` runs 66 forge cases on a Base mainnet fork (10 LeashFactory unit, 10 SessionKeyValidator, 2 LeashIntegration, 44 newer cases covering witness-bearing signature paths).
-
-**Live mainnet smoke** (real USDC, real gas) lives in `scripts/` in the operator's private workspace — not in this repo. Public contributors do not need to run it; CI never runs it. If you need it for a deep investigation, ask the maintainer.
-
-When you add a feature: extend the **existing** test file for the surface you're changing. New `*.test.ts` only when you're adding a wholly new module. Tests that depend on RPC behavior should use the fork (forge) or mock (`packages/mcp-server/src/proxy/*.test.ts` patterns), not hit live RPC.
-
-## Repository structure
+## Layout
 
 ```
 packages/
-├── core/           # Shared types, ABIs, policy parser, Kernel-wrapped EIP-712
-│                   # builder, x402 challenge parser, USDC EIP-3009 signer,
-│                   # the canonical UPSTREAM_PAYTO registry.
-├── mcp-server/     # The proxy. x402 middleware + 5 own tools + SQLite
-│                   # payment log. Per-upstream adapters under src/upstreams/.
-├── bundler/        # In-process ERC-4337 v0.7 bundler. No external rundler.
-└── cli/            # `leash apply | serve | status | logs | fund | drain
-│                   #  | revoke | doctor | export-backup | import-backup`.
+├── core/         types, ABIs, policy parser, Kernel-wrapped EIP-712 builder,
+│                 x402 parser, EIP-3009 signer, UPSTREAM_PAYTO registry.
+├── mcp-server/   the proxy: x402 middleware + 5 own tools + SQLite log;
+│                 adapters under src/upstreams/.
+├── bundler/      in-process ERC-4337 v0.7 bundler (no external rundler).
+└── cli/          leash apply | serve | status | logs | fund | drain |
+                  revoke | doctor | export-backup | import-backup.
 contracts/
-├── lib/                            # Submodules (kernel, eth-infinitism, OZ).
 ├── src/
-│   ├── LeashFactory.sol            # CREATE2 deploy of Kernel proxies +
-│   │                               # hub/sub tracking.
-│   ├── SessionKeyValidator.sol     # ERC-7579 validator with witness-bearing
-│   │                               # 1271 path; enforces target/selector/
-│   │                               # amount + per-recipient EIP-3009 caps.
-│   └── VerifyingPaymaster.sol      # Off-chain signature-gated paymaster.
-└── test/
-examples/
-├── cryptonit/                      # First-time UX example (1 upstream).
-└── verify-grant/                   # On-chain verification helper.
-scripts/                            # Public infra: sync-abis, sync-deployments,
-                                    # generate-keys, demo-skeleton.
-tests/fixtures/upstream-probes/     # Raw 402 challenges captured live;
-                                    # treat as golden test fixtures.
+│   ├── LeashFactory.sol         CREATE2 Kernel proxies + hub/sub tracking.
+│   ├── SessionKeyValidator.sol  ERC-7579 validator; witness-bearing 1271;
+│   │                            target+selector+amount+per-recipient caps.
+│   └── VerifyingPaymaster.sol   off-chain signature-gated paymaster.
+└── lib/                         pinned submodules.
+docs/                            user/agent/contributor reference; see docs/README.md.
+examples/                        cryptonit (1 upstream), verify-grant.
+scripts/                         sync-abis, sync-deployments, generate-keys, demo-skeleton.
+tests/fixtures/upstream-probes/  captured 402 challenges; golden test fixtures.
 ```
 
-## Code architecture
-
-The proxy + signer + bundler triad, in dataflow order:
+## Architecture
 
 ```
 Claude Code → MCP stdio → mcp-server/server.ts
-                              ├── tools/      (own tools: balance, budget, pay, transfer, revoke)
-                              ├── proxy/      (per-upstream proxy; intercepts 402, signs, retries)
-                              └── upstreams/  (per-upstream adapters; declared quirks only)
+                          ├── tools/      own: balance, budget, pay, transfer, revoke
+                          ├── proxy/      intercepts 402, signs, retries
+                          └── upstreams/  per-upstream adapters; declared quirks only
 
-mcp-server signs by:
-  1. Parsing the 402 challenge via core/x402.ts
-  2. Building the EIP-3009 TransferWithAuthorization digest via core/x402.ts
-  3. Wrapping in Kernel's EIP-712 envelope via core/kernel-wrap.ts
-  4. Encoding the witness-bearing outer signature: 0x01 || validator(20) || ECDSA(65) || abi.encode(witness)
-  5. Submitting via the upstream's required retry header (X-PAYMENT for v1, Payment-Signature for v2)
+x402 signing path:
+  1. core/x402.ts parses the 402 challenge
+  2. core/x402.ts builds the EIP-3009 TransferWithAuthorization digest
+  3. core/kernel-wrap.ts wraps in Kernel EIP-712
+  4. emits witness sig: 0x01 ‖ validator(20) ‖ ECDSA(65) ‖ abi.encode(witness)   // 246 B
+  5. retries via X-PAYMENT (v1) or Payment-Signature (v2)
 
-UserOp actions (transfer, revoke_session_key) flow through:
-  cli or mcp-server → bundler → EntryPoint v0.7 → Kernel sub-account → SessionKeyValidator
+UserOps (transfer, revoke):
+  cli or mcp-server → bundler → EntryPoint v0.7 → Kernel sub → SessionKeyValidator
 ```
 
-The split between **on-chain policy** (SessionKeyValidator) and **local policy** (SQLite counters in `mcp-server/db.ts`) is deliberate. On-chain enforces target + selector + per-tx amount + per-recipient EIP-3009 amount — the cap nobody can bypass. SQLite enforces rolling daily/weekly/monthly windows — the agent's negotiated budget envelope.
+**Policy split.** On-chain (SessionKeyValidator) enforces target + selector + per-tx amount + per-recipient EIP-3009 amount — the cap nobody bypasses. SQLite (`mcp-server/db.ts`) enforces rolling daily/weekly/monthly windows — the negotiated budget envelope. Deliberate; don't consolidate.
 
-## Key technical details
+## Tricky bits
 
-These are the tricky bits. Most subtle bugs trace back to one of them.
+Most subtle bugs trace back to one of these.
 
-### ERC-4337 v0.7 (PackedUserOperation)
+### ERC-4337 v0.7 packing
+- `accountGasLimits` = verificationGasLimit(16B) ‖ callGasLimit(16B), big-endian.
+- `gasFees`          = maxPriorityFeePerGas(16B) ‖ maxFeePerGas(16B), big-endian.
+- Bundler is **v0.7-only.** Don't back-port to v0.6.
 
-- `accountGasLimits` = verificationGasLimit (16B) ‖ callGasLimit (16B), big-endian.
-- `gasFees` = maxPriorityFeePerGas (16B) ‖ maxFeePerGas (16B), big-endian.
-- The bundler in `packages/bundler/` is **v0.7-only.** Don't try to back-port to v0.6.
+### Kernel v3.3 1271 wrapper
 
-### Kernel v3.3 + ERC-7579 validators
+`isValidSignature` does **not** hash the raw payload — it wraps in Kernel EIP-712, then routes by the outer sig's first byte:
 
-ERC-1271 `isValidSignature` does **not** hash the raw payload directly — it wraps it in a Kernel-specific EIP-712 envelope, then routes to the active validator. Wrapper typehash:
+```
+typehash = keccak256("Kernel(bytes32 hash)")
+         = 0x1547321c374afde8a591d972a084b071c594c275e36724931ff96c25f2999c83
+domain   = {name:"Kernel", version:"0.3.3", chainId, verifyingContract: subAccount}
 
-```solidity
-keccak256("Kernel(bytes32 hash)")
-// = 0x1547321c374afde8a591d972a084b071c594c275e36724931ff96c25f2999c83
+0x00 ‖ ECDSA(65B)                                                   → root validator (hub-owned)
+0x01 ‖ validator(20B) ‖ ECDSA(65B) ‖ abi.encode(to,value,vA,vB,n)   → SessionKeyValidator + witness (246 B)
 ```
 
-Domain: `{name: "Kernel", version: "0.3.3", chainId, verifyingContract: subAccount}`.
-
-The outer signature's first byte selects the validator:
-- `0x00 ‖ ECDSA(kernelDigest, 65 bytes)` → root validator (hub-owned ECDSAValidator), full override.
-- `0x01 ‖ validatorAddress(20) ‖ ECDSA(kernelDigest, 65 bytes) ‖ abi.encode(to, value, validAfter, validBefore, nonce)` → secondary validator (SessionKeyValidator) with witness payload. Total: **246 bytes**.
-
-The witness path is what makes per-recipient on-chain caps work — see `summary` linked from `CONTRIBUTING.md` if you need the full design rationale; the short version is in `contracts/src/SessionKeyValidator.sol` comments.
+The witness path is what makes per-recipient on-chain caps work. Design notes in `contracts/src/SessionKeyValidator.sol` comments.
 
 ### USDC on Base (FiatTokenV2_2)
-
-- EIP-712 domain `version` is `"2"`, **not `"2.2"`**. This is a common trap.
+- EIP-712 domain `version: "2"` (**not** `"2.2"`). Common trap.
 - 6 decimals; all internal math in bigint base units.
-- USDC's `SignatureChecker` accepts ERC-1271 contract sigs — this is what makes `transferWithAuthorization` work against a smart-account signer.
+- `SignatureChecker` accepts ERC-1271 — that's what makes `transferWithAuthorization` work against a smart account.
 
-### x402 protocol versions
+### x402 v1 / v2
 
-Both v1 and v2 are supported by adapters; signing is identical.
+Both supported. Signing is identical; only the retry header differs.
 
 | Version | Retry header | Detection |
 |---|---|---|
 | v1 | `X-PAYMENT` | `challenge.x402Version === 1` |
 | v2 | `Payment-Signature` | `challenge.x402Version === 2` |
 
-`@getleash/core::encodeRetryHeader` picks the right header automatically. Adapters declare `x402Version`; the proxy does the rest.
+`@getleash/core::encodeRetryHeader` picks. Adapters declare `x402Version`; the proxy does the rest.
 
-**Facilitator compatibility:** Leash works with any x402 facilitator that implements ERC-1271 contract-signature verification (the `isSmartWallet = sigLen > 130` branch from the reference impl). Legacy self-hosted facilitators that strict-check 65-byte EOA sigs **do not work** with Leash and never will from this side — the upstream operator has to update their facilitator. We've documented the pattern; don't try to "fix" this in the adapter.
+**Facilitator compatibility.** Leash works with any x402 facilitator that implements ERC-1271 contract-sig verification (the `isSmartWallet = sigLen > 130` branch from `coinbase/x402`'s reference impl). Legacy facilitators that strict-check 65-byte EOA sigs **do not work** and never will from this side — upstream operator must update. Don't "fix" this in the adapter.
 
-### Gas estimation defaults
+### Gas defaults
 
 ```
 verificationGasLimit: 500_000
@@ -141,74 +112,67 @@ callGasLimit:         300_000
 preVerificationGas:   100_000
 ```
 
-Generous on purpose — bundler simulation is the safety net, not gas estimation accuracy.
+Generous on purpose — bundler simulation is the safety net.
 
-### Key contract addresses (Base mainnet)
-
+### Base mainnet addresses
 - EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`
-- USDC (FiatTokenV2_2): `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
-- Leash SessionKeyValidator: `0xF31271d1aA947B40bd1193b260dc2Ba48BD239E3`
-- Kernel v3.3 factory + implementation: see `packages/core/src/constants.ts`.
+- USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
+- SessionKeyValidator: `0xF31271d1aA947B40bd1193b260dc2Ba48BD239E3`
+- Kernel v3.3 factory + impl: `packages/core/src/constants.ts`.
 
-## Adding an upstream adapter
+## Adding an upstream
 
-The single highest-value contribution. Skill **`writing-x402-adapters`** under `.claude/skills/` is the full walkthrough — invoke it (or read its `SKILL.md`) when you start. High-level steps:
+Highest-leverage contribution. Full walkthrough: skill `writing-x402-adapters` under `.claude/skills/`. Steps:
 
-1. Capture the upstream's live 402 challenge into `tests/fixtures/upstream-probes/<name>.json`.
-2. Add a `payTo` entry to `packages/core/src/upstream-payto.ts`.
-3. Author the adapter in `packages/mcp-server/src/upstreams/<name>.ts` (use `coinmarketcap.ts` for MCP-mode upstreams, `exa.ts` for REST).
+1. Capture the upstream's live 402 into `tests/fixtures/upstream-probes/<name>.json`.
+2. Add a `payTo` to `packages/core/src/upstream-payto.ts`.
+3. Author `packages/mcp-server/src/upstreams/<name>.ts` (MCP-mode: copy `coinmarketcap.ts`; REST: copy `exa.ts`).
 4. Register in `packages/mcp-server/src/upstreams/registry.ts`.
-5. Write a unit test under the adapter's directory.
-6. The maintainer runs the live-mainnet smoke before merge — probe-cleanness ≠ settle-cleanness, so don't claim "works" until the smoke confirms it.
+5. Unit test against the fixture.
+6. Maintainer runs the live smoke before merge — probe-cleanness ≠ settle-cleanness.
 
-Inclusion filter: permissionless (no API-key signup), USDC on Base, $0.001–$0.50 per call, stable URL backed by working docs or a verified live endpoint. Open an issue first with the candidate's raw 402 response so we don't duplicate work.
+Inclusion filter: permissionless, USDC on Base, $0.001–$0.50/call, stable URL. Open an issue first with the raw 402.
 
 ## Documentation-first workflow
 
-Anything that changes a user-visible surface — a new CLI command or flag, a new policy field, a new error code, a new MCP tool, a new upstream adapter, a renamed config key — **updates `docs/` first.** The doc is the contract; the code satisfies the doc.
+Anything that changes a user-visible surface — CLI command/flag, policy field, error code, MCP tool, upstream adapter, renamed config key — **updates `docs/` first.** The doc is the contract; the code satisfies the doc.
 
-This is the same principle as the project's "UX freeze before code" policy from the planning phase, applied continuously. Most scope and naming problems surface when you try to write the doc and discover the change doesn't read cleanly. Better to find that out before the code and tests ossify around a bad choice.
+Procedure:
 
-Concretely, before writing or modifying production code that touches a user-visible surface:
+1. Find the `docs/*.md` page covering the surface (add a row to `docs/README.md` + create the page if none does).
+2. Write the doc showing the exact invocation / schema / error shape the user will see. Reads as if the feature exists.
+3. Then write the code and tests to match.
 
-1. Identify which `docs/*.md` page covers it. If none does, add an entry in `docs/README.md` and create the page.
-2. Write or update the doc section. Show the exact CLI invocation, policy syntax, tool schema, error shape, or example output the user will see. The doc should read as if the feature already exists.
-3. **Then** write the code and tests so they match what the doc says.
+Skip only for: pure internal refactors (no user-visible diff), bug fixes restoring documented behavior (note in `CHANGELOG.md`), operator-only scripts (not in this repo).
 
-Skip the docs step only for:
+A PR adding a flag, field, code, or tool without a matching `docs/` change is incomplete.
 
-- Pure internal refactors with no user-visible diff.
-- Bug fixes that restore documented behavior — note them in `CHANGELOG.md` instead.
-- Operator-only scripts that don't live in this repo.
-
-The code-review self-check below has a line item for this. A PR that adds a CLI flag, a policy field, an error code, or a tool without a matching `docs/` change is incomplete.
-
-## Code review self-check
-
-Before opening a PR, walk through:
+## PR self-check
 
 - [ ] `npm test --workspaces` green.
 - [ ] `cd contracts && forge test --fork-url $BASE_RPC_URL` green.
-- [ ] No `.env`, no private keys, no session keys in the diff. `git diff --stat` is your friend.
-- [ ] Any new signed-message format (EIP-712 typehash, witness layout, etc.) has both a TS test asserting the digest and a Solidity test asserting on-chain rebuild produces the same digest.
-- [ ] Any new policy field has a parser test with a clear error message + line number.
-- [ ] Any new adapter has a unit test referencing a fixture in `tests/fixtures/upstream-probes/`.
-- [ ] Public-facing files (`README.md`, `CONTRIBUTING.md`, anything users see) match the rest of the project's tone — direct, honest, no marketing fluff.
-- [ ] Any user-visible surface change (CLI command, flag, policy field, error code, MCP tool, upstream adapter) has a matching `docs/` update in the same PR — see "Documentation-first workflow" above.
+- [ ] No `.env`, no private keys, no session keys in the diff (`git diff --stat`).
+- [ ] New signed-message format (EIP-712 typehash, witness layout) has both a TS digest test and a Solidity on-chain-rebuild test.
+- [ ] New policy field has a parser test with a clear error message + line number.
+- [ ] New adapter has a unit test against a fixture in `tests/fixtures/upstream-probes/`.
+- [ ] Public-facing files (`README.md`, `CONTRIBUTING.md`, `docs/`) match the project tone — direct, honest, no marketing fluff.
+- [ ] Any user-visible surface change has a matching `docs/` update in the same PR (see "Documentation-first workflow").
 
-## Important development notes
+## Hard rules
 
-- **Session keys never touch disk.** They live in-memory inside the `leash serve` subprocess, derived from the encrypted agent config. Any PR that writes a session key to a file is a hard reject.
-- **`.env` is for local secrets only.** Never commit one. `.env.example` is the contract — keep it minimal and well-commented.
-- **Real money lives behind clear gates.** Anything that signs and broadcasts a transaction to Base mainnet must (a) read its config from env, (b) print a confirmation summary, and (c) require explicit operator action — no auto-broadcast on a script's happy path. Sepolia testnet first when you can.
-- **Generous comments where the protocol is subtle.** Anywhere a v0.7-vs-v0.6 difference, a Kernel-wrapped vs. raw signature, or a v1-vs-v2 x402 quirk could trip a future reader — leave a comment with the source of truth.
-- **Submodules are pinned.** `contracts/lib/kernel`, `contracts/lib/account-abstraction`, `contracts/lib/openzeppelin-contracts` are pinned to specific commits. Don't `git submodule update` casually — verify the new commits are vetted before bumping.
-- **No backwards-compat scaffolding before a surface is published.** When you change an internal API, change the callers in the same PR. Don't leave aliases or `// removed` comments. Once a package surface ships on npm, the rules change — until then, keep the diff clean.
+- **Session keys never touch disk.** In-memory in `leash serve`, derived from the encrypted agent config. PR that writes one to a file is a hard reject.
+- **`.env` is local-only.** Never commit. `.env.example` is the contract — minimal and well-commented.
+- **Real-money paths gate clearly.** Anything that signs + broadcasts to Base mainnet must (a) read config from env, (b) print a confirmation summary, (c) require explicit operator action. No auto-broadcast on a script's happy path. Sepolia first when you can.
+- **Comment subtle protocol bits.** v0.7-vs-v0.6, Kernel-wrapped vs raw sig, v1-vs-v2 x402 — leave the source of truth in a comment.
+- **Submodules are pinned.** Don't `git submodule update` casually — `contracts/lib/{kernel,account-abstraction,openzeppelin-contracts}` are at specific vetted commits.
+- **No backwards-compat scaffolding pre-npm.** Change callers in the same PR. No aliases, no `// removed` comments. Rules change once a surface ships on npm; until then, keep diffs clean.
 
-## Debugging notes
+## Debugging cheatsheet
 
-- **CI failures:** GitHub Actions wiring is not landed yet; treat local green tests as the bar until CI is set up.
-- **`forge test` flake on the public RPC:** the public Base RPC is load-balanced; if you see intermittent fork-test flakes, set `BASE_RPC_URL` to a dedicated RPC (Alchemy, QuickNode, etc.) and rerun. The TS proxy code already uses viem's `http(url, { retryCount, retryDelay })`; if you're seeing flakes from new code, mirror that pattern.
-- **`installModule` revert with no error:** SessionKeyValidator's init data is a 7-tuple; mismatched ABI encoding is the most common cause. See `packages/cli/src/commands/apply.ts::buildInstallInitData`.
-- **Post-deploy / post-install state reads return stale data.** After deploying a contract or calling `installModule` against a load-balanced public RPC (e.g. `https://mainnet.base.org`), the transaction receipt may be confirmed before all RPC nodes have caught up. A read like `sessionKeyValidator.sessions(subAccount)` can return zeroed state for **3–5 seconds** after the receipt comes back. The fix is to wait briefly and use a retry transport. Production code under `packages/` already does this via `http(url, { retryCount: 5, retryDelay: 2000 })`; deploy and install scripts should sleep ~5s after broadcast before any state assertion. Using a dedicated RPC (Alchemy, QuickNode) instead of the public endpoint removes the lag.
-- **Facilitator returned 4xx on retry:** check sig length first. 65 bytes = old-style EOA sig (should never happen from Leash); 246 bytes = witness sig (expected). If the facilitator rejects 246-byte sigs, it's a legacy facilitator and the upstream needs to update theirs — not a Leash bug.
+| Symptom | Cause | Fix |
+|---|---|---|
+| `forge test` flakes | Public Base RPC is load-balanced | Set `BASE_RPC_URL` to Alchemy/QuickNode. TS code uses viem `http(url, { retryCount, retryDelay })` — mirror that pattern in new code. |
+| `installModule` revert with no error data | SessionKeyValidator init data is a 7-tuple; ABI encoding mismatch | See `packages/cli/src/commands/apply.ts::buildInstallInitData`. |
+| Post-deploy / post-install state reads return 0x0 for 3–5 s | Load-balanced RPC catches up after the receipt mines | Sleep ~5 s in deploy/install scripts before any state assertion. Production code uses `http(url, { retryCount: 5, retryDelay: 2000 })`. A dedicated RPC removes the lag. |
+| Facilitator returns 4xx on retry | 65 B sig = old EOA (shouldn't happen from Leash); 246 B = witness (expected). 4xx on 246 B = legacy facilitator | Upstream operator updates their facilitator. Not a Leash bug. |
+| CI failures | GH Actions wiring not landed yet | Local green tests are the bar until CI is set up. |
