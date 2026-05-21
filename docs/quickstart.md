@@ -71,7 +71,7 @@ This time Leash:
 4. Seeds the sub with `initial_funding` USDC from the hub.
 5. Writes `.mcp.json` in the current directory with the right stdio launch command.
 
-Gas is sponsored by Leash's `VerifyingPaymaster`, so the funding flow needs USDC only — no ETH required from you. (The maintainer covers the gas; see `summary/business-model-stance` in the planning workspace for the rationale.)
+Gas is sponsored by Leash's `VerifyingPaymaster`, so the funding flow needs USDC only — no ETH required from you. The maintainer covers the gas at MVP scale (one ETH deposit covers months of typical UserOps); a per-user rate-limited signer service is queued for the moment that stops being economical.
 
 ## 6. Open Claude Code
 

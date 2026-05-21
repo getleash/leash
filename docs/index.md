@@ -53,7 +53,7 @@ If Cryptonit goes rogue, `leash revoke cryptonit` kills the session key on-chain
 ## What it is not
 
 - **Not a custodial service.** The hub-owner key is yours. There's no "Leash backend" between you and Base.
-- **Not a generic x402 proxy.** Every upstream is a curated adapter (~30 LOC each). The MVP doesn't accept arbitrary URLs at runtime; it accepts ones from the catalog. The rationale is in `summary/upstream-strategy` (planning workspace) — the short version: real-world x402 implementations vary just enough that per-upstream adapters are cheaper than a permanent compatibility tax.
+- **Not a generic x402 proxy.** Every upstream is a curated adapter (~30 LOC each). The MVP doesn't accept arbitrary URLs at runtime; it accepts ones from the catalog. The rationale: real-world x402 implementations vary just enough — header vs body challenges, v1 vs v2 retry semantics, idiosyncratic facilitator quirks — that per-upstream adapters are cheaper than a permanent "any URL works" compatibility tax. Adding a new upstream is ~30 LOC + one fixture; see [`adapter-guide.md`](adapter-guide.md).
 - **Not multi-chain at launch.** Base only. Multi-chain is post-launch consideration.
 - **Not multi-agent yet.** The topology is forward-compatible (hub + factory model), but the CLI ships single-agent for the MVP.
 

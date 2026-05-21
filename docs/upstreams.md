@@ -59,7 +59,7 @@ For a row to appear in the table above, **every** of these must hold:
 
 1. Leash has a typed adapter in `packages/mcp-server/src/upstreams/<name>.ts`.
 2. The upstream's `payTo` is stable (or stable-enough for the catalog model) and registered in `packages/core/src/upstream-payto.ts`.
-3. **A live mainnet smoke call settled USDC and returned a tool result** — captured in `summary/upstreams-catalog.md` in the planning workspace.
+3. **A live mainnet smoke call settled USDC and returned a tool result.** Probe-cleanness (a valid 402 challenge) is not enough; historically ~50% of probe-clean upstreams fail at settle time for legacy-facilitator or operator-side reasons. The smoke is the binding evidence.
 4. The upstream's facilitator implements ERC-1271 contract-signature verification (the modern smart-wallet sig path).
 
 Upstreams that pass probes but fail at settle time (because of a legacy facilitator, rotating payTo, or operator-side gaps) are listed in "Deferred" below.

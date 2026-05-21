@@ -192,7 +192,7 @@ The canonical list. Match against `structuredContent.code`.
 | `RPC_ERROR` | network | Base RPC failure (timeout, rate-limit, transient unavailability). Often retriable. |
 | `BUNDLER_ERROR` | network | The in-process bundler's UserOp submission failed. Often retriable. |
 
-The full list (with `details`-field schemas per code) lives in `summary/errors.md` in the planning workspace and in the code at `packages/mcp-server/src/errors.ts`. New codes follow the same shape — add an entry here in the same PR per the docs-first workflow.
+The canonical source for each code's `details`-field shape is `packages/mcp-server/src/errors.ts` (the error builders) and `packages/core/src/types.ts` (the `MCPErrorCode` union). New codes follow the same envelope shape — add an entry here in the same PR per the docs-first workflow.
 
 ## Tool retries — what Claude should do
 

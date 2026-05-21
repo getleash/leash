@@ -72,7 +72,7 @@ For new upstreams, REST mode covers ~90% of x402-enabled APIs in the wild.
    - The challenge's `network` and `scheme` fields are filterable to Leash's supported set.
    - The signing path produces the expected witness payload for the upstream's `payTo` + a mock authorization.
 
-6. **Ask the maintainer to run the live mainnet smoke**. The maintainer runs `scripts/smoke-upstreams.ts` (in the operator's private workspace) with a freshly-funded sub-account, calling one tool from your adapter, settling real USDC, and verifying the result. **Probe-cleanness ≠ settle-cleanness** — historically, ~50% of probe-clean upstreams have failed the live smoke for legacy-facilitator reasons.
+6. **Ask the maintainer to run the live mainnet smoke**. The maintainer runs the smoke harness against Base mainnet with a freshly-funded sub-account, calling one tool from your adapter, settling real USDC, and verifying the upstream returns a tool result. **Probe-cleanness ≠ settle-cleanness** — historically, ~50% of probe-clean upstreams have failed the live smoke for legacy-facilitator reasons. The smoke run, not the PR diff alone, is what promotes a row from "Deferred" to "Available" in [`upstreams.md`](upstreams.md).
 
 7. **PR review.** The self-check in [`CLAUDE.md`](../CLAUDE.md) covers the must-have checklist. Update [`upstreams.md`](upstreams.md) in the same PR with a new row (this is the docs-first rule applied; the doc and the adapter ship together).
 
