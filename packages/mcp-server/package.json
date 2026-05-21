@@ -1,13 +1,12 @@
 {
   "name": "@getleash/mcp-server",
   "version": "0.1.0",
-  "private": true,
   "description": "Leash MCP stdio proxy: 5 own tools + 10 x402 upstream adapters + SQLite payment log.",
   "license": "MIT",
   "author": "Stepan Kouba",
   "repository": {
     "type": "git",
-    "url": "https://github.com/getleash/leash.git",
+    "url": "git+https://github.com/getleash/leash.git",
     "directory": "packages/mcp-server"
   },
   "homepage": "https://getleash.dev",
@@ -15,15 +14,18 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "engines": { "node": ">=20" },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "test": "vitest run --exclude test/integration/",
     "test:sepolia": "vitest run test/integration/",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@getleash/core": "*",
-    "@getleash/bundler": "*",
+    "@getleash/core": "^0.1.0",
+    "@getleash/bundler": "^0.1.0",
     "@modelcontextprotocol/sdk": "^1.11.0",
     "better-sqlite3": "^11.8.0",
     "viem": "^2.27.0",

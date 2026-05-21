@@ -1,13 +1,12 @@
 {
   "name": "@getleash/bundler",
   "version": "0.1.0",
-  "private": true,
   "description": "In-process ERC-4337 v0.7 bundler for Leash sub-account UserOps.",
   "license": "MIT",
   "author": "Stepan Kouba",
   "repository": {
     "type": "git",
-    "url": "https://github.com/getleash/leash.git",
+    "url": "git+https://github.com/getleash/leash.git",
     "directory": "packages/bundler"
   },
   "homepage": "https://getleash.dev",
@@ -15,14 +14,17 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "engines": { "node": ">=20" },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "test": "vitest run --exclude test/integration/**",
     "test:sepolia": "vitest run test/integration/",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@getleash/core": "*",
+    "@getleash/core": "^0.1.0",
     "viem": "^2.27.0"
   },
   "devDependencies": {

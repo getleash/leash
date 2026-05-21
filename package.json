@@ -7,7 +7,7 @@
   "author": "Stepan Kouba",
   "repository": {
     "type": "git",
-    "url": "https://github.com/getleash/leash.git"
+    "url": "git+https://github.com/getleash/leash.git"
   },
   "homepage": "https://getleash.dev",
   "bugs": "https://github.com/getleash/leash/issues",
