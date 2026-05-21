@@ -163,6 +163,26 @@ The single highest-value contribution. Skill **`writing-x402-adapters`** under `
 
 Inclusion filter: permissionless (no API-key signup), USDC on Base, $0.001–$0.50 per call, stable URL backed by working docs or a verified live endpoint. Open an issue first with the candidate's raw 402 response so we don't duplicate work.
 
+## Documentation-first workflow
+
+Anything that changes a user-visible surface — a new CLI command or flag, a new policy field, a new error code, a new MCP tool, a new upstream adapter, a renamed config key — **updates `docs/` first.** The doc is the contract; the code satisfies the doc.
+
+This is the same principle as the project's "UX freeze before code" policy from the planning phase, applied continuously. Most scope and naming problems surface when you try to write the doc and discover the change doesn't read cleanly. Better to find that out before the code and tests ossify around a bad choice.
+
+Concretely, before writing or modifying production code that touches a user-visible surface:
+
+1. Identify which `docs/*.md` page covers it. If none does, add an entry in `docs/README.md` and create the page.
+2. Write or update the doc section. Show the exact CLI invocation, policy syntax, tool schema, error shape, or example output the user will see. The doc should read as if the feature already exists.
+3. **Then** write the code and tests so they match what the doc says.
+
+Skip the docs step only for:
+
+- Pure internal refactors with no user-visible diff.
+- Bug fixes that restore documented behavior — note them in `CHANGELOG.md` instead.
+- Operator-only scripts that don't live in this repo.
+
+The code-review self-check below has a line item for this. A PR that adds a CLI flag, a policy field, an error code, or a tool without a matching `docs/` change is incomplete.
+
 ## Code review self-check
 
 Before opening a PR, walk through:
@@ -174,6 +194,7 @@ Before opening a PR, walk through:
 - [ ] Any new policy field has a parser test with a clear error message + line number.
 - [ ] Any new adapter has a unit test referencing a fixture in `tests/fixtures/upstream-probes/`.
 - [ ] Public-facing files (`README.md`, `CONTRIBUTING.md`, anything users see) match the rest of the project's tone — direct, honest, no marketing fluff.
+- [ ] Any user-visible surface change (CLI command, flag, policy field, error code, MCP tool, upstream adapter) has a matching `docs/` update in the same PR — see "Documentation-first workflow" above.
 
 ## Important development notes
 
