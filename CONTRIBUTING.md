@@ -56,8 +56,9 @@ Not currently accepted:
 2. **Branch off `main`.** Name the branch `<topic>/<short-slug>` (e.g. `fix/policy-parser-trailing-newline`).
 3. **Keep PRs small.** A reviewable PR is ≤300 LOC of substance plus tests. If it's bigger, split it.
 4. **Tests must pass:** `npm test --workspaces` (217+) and `forge test --fork-url $BASE_RPC_URL` (66+). If you add features that hit live infra, add a vitest + a fork test rather than a script.
-5. **No formatter wars.** Match the existing style (Prettier config at repo root applies). If your editor reflows long blocks, undo that before committing.
-6. **PR description:** what problem this solves, what changed, how it was tested. Reference any related issue.
+5. **Contract changes: run `/security-audit`.** Any diff under `contracts/src/` should be reviewed via the `/security-audit` slash command in Claude Code before opening a PR — it walks the witness-bearing signature path, ERC-7579 install gating, USDC EIP-712 domain quirks, and the storage-layout checklist. Paste the verdict line into the PR description.
+6. **No formatter wars.** Match the existing style (Prettier config at repo root applies). If your editor reflows long blocks, undo that before committing.
+7. **PR description:** what problem this solves, what changed, how it was tested. Reference any related issue.
 
 ## Coding conventions
 

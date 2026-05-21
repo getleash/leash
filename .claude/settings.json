@@ -1,1 +1,61 @@
-{}
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run clean:*)",
+      "Bash(npm run sync-abis)",
+      "Bash(npm run sync-deployments)",
+      "Bash(npm run demo:skeleton)",
+      "Bash(npm install)",
+      "Bash(npm ci)",
+      "Bash(npx tsx:*)",
+      "Bash(forge test:*)",
+      "Bash(forge build:*)",
+      "Bash(forge fmt:*)",
+      "Bash(git status)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git stash:*)",
+      "Bash(git fetch:*)",
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Bash(find . -name:*)",
+      "Bash(find . -path:*)",
+      "Bash(jq:*)",
+      "Bash(cat tests/fixtures/upstream-probes/*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./session-key.json)",
+      "Read(./**/session-key.json)",
+      "Write(./.env)",
+      "Write(./.env.local)",
+      "Write(./session-key.json)",
+      "Write(./**/session-key.json)",
+      "Edit(./.env)",
+      "Edit(./.env.local)",
+      "Edit(./session-key.json)",
+      "Edit(./**/session-key.json)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/block-secrets.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

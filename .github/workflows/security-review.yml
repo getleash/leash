@@ -1,0 +1,98 @@
+name: Security review
+
+# Path-gated PR review. Runs the Leash-specific Claude slash commands
+# against the diff and posts findings as a PR comment. Comment-only —
+# never blocks merge. If you want merge-blocking later, add a final
+# job that parses the review for CRITICAL/HIGH and exits non-zero.
+
+on:
+  pull_request:
+    paths:
+      - 'contracts/src/**'
+      - 'packages/*/src/**'
+      - 'packages/*/test/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: security-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    name: Detect changed surfaces
+    runs-on: ubuntu-latest
+    outputs:
+      contracts: ${{ steps.filter.outputs.contracts }}
+      typescript: ${{ steps.filter.outputs.typescript }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            contracts:
+              - 'contracts/src/**'
+            typescript:
+              - 'packages/*/src/**'
+
+  contracts-review:
+    name: /security-audit (Solidity)
+    needs: detect-changes
+    if: needs.detect-changes.outputs.contracts == 'true'
+    runs-on: ubuntu-latest
+    env:
+      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0  # /security-audit greps git diff against base
+
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Run the Leash-specific Solidity security review.
+      # Action pins to @beta until the user confirms a tagged release works
+      # for this repo; switch to a SHA-pinned tag for supply-chain hygiene.
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: '/security-audit'
+          # Comment-only: the action posts Claude's response as a PR comment.
+
+  typescript-review:
+    name: /security-review-ts (TypeScript)
+    needs: detect-changes
+    if: needs.detect-changes.outputs.typescript == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build (typecheck) before review
+        run: npm run build --workspaces
+
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: '/security-review-ts'

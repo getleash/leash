@@ -1,0 +1,58 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel in-progress runs when a new commit lands on the same branch.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typescript:
+    name: TypeScript (vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build all workspaces
+        run: npm run build --workspaces
+
+      - name: Run vitest across all workspaces
+        run: npm test --workspaces
+
+  solidity:
+    name: Solidity (forge --fork)
+    runs-on: ubuntu-latest
+    env:
+      # Forge fork tests need a real Base RPC. The public endpoint
+      # (https://mainnet.base.org) is load-balanced and flakes under
+      # CI parallelism; use a dedicated RPC via the BASE_RPC_URL secret.
+      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Forge build
+        working-directory: contracts
+        run: forge build --sizes
+
+      - name: Forge test (fork)
+        working-directory: contracts
+        run: forge test --fork-url "$BASE_RPC_URL" -vv

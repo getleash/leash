@@ -1,0 +1,72 @@
+name: Nightly security sweep
+
+# Runs /security-audit + /security-review-ts against main HEAD.
+# Opens a GitHub issue if any CRITICAL or HIGH finding appears.
+# Catches:
+#  - vulnerabilities introduced via direct push to main
+#  - dep-update regressions (Renovate/Dependabot bumps)
+#  - drift from main-branch state that PR-time review didn't catch
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 03:00 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    env:
+      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ref: main
+
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build (typecheck)
+        run: npm run build --workspaces
+
+      - name: Run both security reviews + open issue on regressions
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # The action's CLI inherits GITHUB_TOKEN so `gh issue create` works.
+          prompt: |
+            Run both Leash security reviews against main HEAD, in this order:
+
+            1. /security-audit (Solidity)
+            2. /security-review-ts (TypeScript)
+
+            After both finish, decide:
+
+            - If neither review surfaced any CRITICAL or HIGH finding: do nothing.
+              Print "Nightly sweep clean — no issue opened." and exit.
+
+            - If any CRITICAL or HIGH finding appeared: open a GitHub issue
+              using `gh issue create` with:
+                * Title: "Nightly security sweep: {N} CRITICAL/HIGH findings on main"
+                * Labels: "security", "nightly-sweep"
+                * Body: a concise summary of each finding (severity, file:line,
+                  one-line explanation), followed by the full reports as
+                  collapsible <details> blocks.
+
+            Do not open multiple issues if findings repeat from prior nights —
+            check for an existing open issue with the "nightly-sweep" label first,
+            and update it via a comment instead of opening a duplicate.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
