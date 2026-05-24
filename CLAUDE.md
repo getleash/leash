@@ -6,7 +6,7 @@ MCP proxy for AI agents paying x402-enabled APIs in USDC on Base L2, with on-cha
 
 ```bash
 git submodule update --init --recursive   # contracts/lib/{kernel, account-abstraction, openzeppelin-contracts}
-npm install && npm run build --workspaces
+npm install && npm run build
 npm test --workspaces                                   # 224 vitest cases
 cd contracts && forge test --fork-url $BASE_RPC_URL     # 66 forge cases, Base mainnet fork
 ```

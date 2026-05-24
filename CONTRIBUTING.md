@@ -9,7 +9,7 @@ git clone https://github.com/getleash/leash.git
 cd leash
 git submodule update --init --recursive   # contracts/lib/kernel
 npm install
-npm run build --workspaces
+npm run build
 npm test --workspaces
 ```
 

@@ -16,7 +16,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build -w @getleash/core && npm run build -w @getleash/bundler && npm run build -w @getleash/mcp-server && npm run build -w @getleash/cli",
     "test": "npm test --workspaces",
     "clean": "npm run clean --workspaces --if-present",
     "demo:skeleton": "tsx scripts/demo-skeleton.ts",

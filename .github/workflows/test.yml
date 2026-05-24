@@ -15,19 +15,19 @@ jobs:
     name: TypeScript (vitest)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'npm'
 
       - run: npm ci
 
-      - name: Build all workspaces
-        run: npm run build --workspaces
+      - name: Build all workspaces (topo order)
+        run: npm run build
 
       - name: Run vitest across all workspaces
         run: npm test --workspaces
@@ -41,7 +41,7 @@ jobs:
       # CI parallelism; use a dedicated RPC via the BASE_RPC_URL secret.
       BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 

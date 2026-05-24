@@ -28,7 +28,7 @@ jobs:
       contracts: ${{ steps.filter.outputs.contracts }}
       typescript: ${{ steps.filter.outputs.typescript }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -46,7 +46,7 @@ jobs:
     env:
       BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
           fetch-depth: 0  # /security-audit greps git diff against base
@@ -55,7 +55,7 @@ jobs:
         with:
           version: stable
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'npm'
@@ -77,20 +77,20 @@ jobs:
     if: needs.detect-changes.outputs.typescript == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'npm'
 
       - run: npm ci
 
-      - name: Build (typecheck) before review
-        run: npm run build --workspaces
+      - name: Build (typecheck, topo order) before review
+        run: npm run build
 
       - uses: anthropics/claude-code-action@beta
         with:
