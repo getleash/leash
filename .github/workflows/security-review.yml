@@ -44,7 +44,9 @@ jobs:
     if: needs.detect-changes.outputs.contracts == 'true'
     runs-on: ubuntu-latest
     env:
-      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+      # /security-audit invokes forge test --fork-url $BASE_RPC_URL.
+      # Falls back to the public Base RPC when the secret isn't set.
+      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL || 'https://mainnet.base.org' }}
     steps:
       - uses: actions/checkout@v5
         with:

@@ -36,10 +36,12 @@ jobs:
     name: Solidity (forge --fork)
     runs-on: ubuntu-latest
     env:
-      # Forge fork tests need a real Base RPC. The public endpoint
-      # (https://mainnet.base.org) is load-balanced and flakes under
-      # CI parallelism; use a dedicated RPC via the BASE_RPC_URL secret.
-      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+      # Forge fork tests need a Base RPC. Prefer a dedicated endpoint via
+      # the BASE_RPC_URL secret — the public mainnet.base.org is load-
+      # balanced and flakes under CI parallelism. Fall back to the public
+      # endpoint so the job runs without the secret configured; expect
+      # occasional retries until a dedicated RPC is wired up.
+      BASE_RPC_URL: ${{ secrets.BASE_RPC_URL || 'https://mainnet.base.org' }}
     steps:
       - uses: actions/checkout@v5
         with:
