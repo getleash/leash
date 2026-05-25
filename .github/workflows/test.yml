@@ -49,7 +49,11 @@ jobs:
 
       - uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: stable
+          # Nightly carries the op-revm fix for the Isthmus hardfork's
+          # operator-fee L1Block fields; stable still panics with
+          # "Missing operator fee scalar for isthmus L1 Block" when
+          # forking current Base mainnet state.
+          version: nightly
 
       - name: Forge build
         working-directory: contracts
